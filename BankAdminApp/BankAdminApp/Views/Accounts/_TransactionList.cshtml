@@ -1,0 +1,78 @@
+﻿@model IEnumerable<BankingAdminApp.DataLayer.EntityClasses.Transactions>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="table-responsive">
+    <table id="displayTable" class="table table-striped" width="100%">
+        <thead>
+            <tr>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Amount
+                </th>
+                <th>
+                    Transaction Date
+                </th>
+                <th>
+                    Date Captured
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var formattedTransactionDate = item.transaction_date.ToString("dd-MMM-yyyy");
+                var formattedCaptureDate = item.capture_date.ToString("dd-MMM-yyyy HH:mm:ss tt");
+                var amount = item.amount.ToString("0.00").Replace(',', '.');
+                <tr>
+                    <td>
+
+                        @Html.DisplayFor(modelItem => item.description)
+                    </td>
+                    <td style="text-align:right">
+                        @Html.DisplayFor(modelItem => amount)
+                    </td>
+
+                    <td>
+
+                        @Html.DisplayFor(modelItem => formattedTransactionDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem =>  formattedCaptureDate)
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-controller="Transactions" asp-route-code="@item.code" class="btn btn-sm btn-info"><i class="fa fa-eye"></i> View</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function() {
+            if ('@TempData["UpdateTransactionSuccess"]' != "") {
+                Swal.fire({
+                    icon: 'success',
+                    title: "Successfully Updated!",
+                    text: '@TempData["UpdateSuccess"]',
+                })
+            }
+            if ('@TempData["CreateTransactionSuccess"]' != "") {
+                Swal.fire({
+                    icon: 'success',
+                    title: "Successfully Created!",
+                    text: '@TempData["CreateSuccess"]',
+                })
+            }
+        });
+    </script>
+}

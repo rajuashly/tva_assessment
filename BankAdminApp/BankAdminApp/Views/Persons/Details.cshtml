@@ -1,0 +1,171 @@
+﻿@model BankingAdminApp.ViewModels.PersonViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div>
+    <h4>Person Details</h4>
+    <div class="row">
+        <span class="help-block">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        </span>
+        <div class="col-md-12">
+            <form asp-action="Details">
+                <input type="hidden" asp-for="code" />
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label asp-for="name" class="control-label"></label>
+                        <input asp-for="name" class="form-control" />
+                        <span asp-validation-for="name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="surname" class="control-label"></label>
+                        <input asp-for="surname" class="form-control" />
+                        <span asp-validation-for="surname" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="id_number" class="control-label required"></label>
+                        <input asp-for="id_number" class="form-control" />
+                        <span asp-validation-for="id_number" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input id="btnSubmit" type="button" value="Update" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <div>
+        <a asp-action="Index">Back to Persons List</a>
+    </div>
+    <hr />
+
+
+    <h4>Person Accounts</h4>
+    <p>
+        <a asp-action="Create" asp-controller="Accounts" asp-route-person_code="@Model.code" asp-route-id_number="@Model.id_number">Create New</a>
+    </p>
+    <partial name="_AccountList.cshtml" for="@Model.accounts">
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $('#btnSubmit').on('click', function(e) {
+            var form = $(this).parents('form');
+            form.validate();
+            if (form.valid()) {
+                form.submit();
+            }
+        });
+
+        $(document).ready(function() {
+            if ('@TempData["UpdatePersonSuccess"]' != "") {
+                Swal.fire({
+                    icon: 'success',
+                    title: "Successfully Updated!",
+                    text: '@TempData["UpdatePersonSuccess"]',
+                })
+            }
+            if ('@TempData["AccountCreateSuccess"]' != "") {
+                Swal.fire({
+                    icon: 'success',
+                    title: "Successfully Created!",
+                    text: '@TempData["AccountCreateSuccess"]',
+                })
+            }
+            if ('@TempData["CloseAccountSuccess"]' != "") {
+                Swal.fire({
+                    icon: 'success',
+                    title: "Successfully Closed!",
+                    text: '@TempData["CloseAccountSuccess"]',
+                });
+            }
+            if ('@TempData["CloseAccountFailure"]' != "") {
+                Swal.fire({
+                    title: "Failed to close account",
+                    text: '@TempData["CloseAccountFailure"]',
+                    icon: 'error',
+                });
+            }
+            if ('@TempData["ReOpenAccountSuccess"]' != "") {
+                Swal.fire({
+                    icon: 'success',
+                    title: "Successfully Opened!",
+                    text: '@TempData["ReOpenAccountSuccess"]',
+                });
+            }
+            if ('@TempData["ReOpenAccountFailure"]' != "") {
+                Swal.fire({
+                    title: "Failed to open account",
+                    text: '@TempData["ReOpenAccountFailure"]',
+                    icon: 'error',
+                });
+            }
+        });
+
+
+        //Datatable
+        $(function() {
+            // JSON data
+            var chartDataUrl = '@Url.Action("tableJsonData", "Tables")';
+
+            $('#displayTable').dataTable({
+                dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>tp",
+                "order": [[0, "asc"]],
+                responsive: true,
+                buttons: [
+                    { extend: 'copy', className: 'btn-sm' },
+                    { extend: 'csv', title: 'Accounts', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
+                    { extend: 'pdf', title: 'Accounts', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
+                    { extend: 'print', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } }
+                ],
+
+                columnDefs: [
+                    { "orderable": false, "targets": [2] },
+                    { "searchable": false, "targets": [1, 2] }
+                ]
+            });
+        });
+
+        function closeAccount(elmnt, person_code, name, account_code) {
+            Swal.fire({
+                title: "Delete",
+                text: "Are you sure you want to close account: " + name + "?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: "No",
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+                    window.location.href = "/Persons/CloseAccount?account_code=" + account_code + "&person_code=" + person_code;
+                }
+            })
+        }
+
+        function reOpenAccount(elmnt, person_code, name, account_code) {
+            Swal.fire({
+                title: "Delete",
+                text: "Are you sure you want to re-open account: " + name + "?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: "No",
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+                    window.location.href = "/Persons/ReOpenAccount?account_code=" + account_code + "&person_code=" + person_code;
+                }
+            })
+        }
+
+
+    </script>
+}

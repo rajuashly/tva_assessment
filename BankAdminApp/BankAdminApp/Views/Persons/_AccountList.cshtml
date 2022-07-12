@@ -1,0 +1,85 @@
+﻿@model IEnumerable<BankingAdminApp.DataLayer.EntityClasses.Accounts>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="table-responsive">
+    <table id="displayTable" class="table table-striped" width="100%">
+        <thead>
+            <tr>
+                <th>
+                    Account Number
+                </th>
+                <th width="30%">
+                    Outstanding Balance
+                </th>
+                <th>
+                    Status
+                </th>
+                <th width="18%">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var outstanding_balance = item.outstanding_balance.ToString("0.00").Replace(',', '.');
+                var isOpen = item.is_active;
+                <tr>
+                    <td>
+
+                        @Html.DisplayFor(modelItem => item.account_number)
+                    </td>
+                    <td style="text-align:right">
+                        @Html.DisplayFor(modelItem => outstanding_balance)
+                    </td>
+                    @if (isOpen)
+                    {
+                        <td style="color:green">
+                            <i>Open</i>
+                        </td>
+                    }
+                    else
+                    {
+                        <td style="color:red">
+                            <i>Closed</i>
+                        </td>
+                    }
+
+                    <td>
+                        <a asp-action="Details" asp-controller="Accounts" asp-route-code="@item.code" class="btn btn-sm btn-info"><i class="fa fa-eye"></i> View</a>
+
+                        @if (isOpen)
+                        {
+                            @if (item.outstanding_balance == 0)
+                            {
+                                <button class="btn btn-danger btn-sm" onclick="return closeAccount(this, '@item.person_code', '@item.account_number', '@item.code')"><i class="fa fa-times-circle"></i> Close</button>
+
+                            }
+                        }
+                        else
+                        {
+                            <button class="btn btn-success btn-sm" onclick="return reOpenAccount(this, '@item.person_code', '@item.account_number', '@item.code')"><i class="fa fa-check"></i> Re-Open</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            if ('@TempData["UpdateAccountSuccess"]' != "") {
+                Swal.fire({
+                    icon: 'success',
+                    title: "Successfully Updated!",
+                    text: '@TempData["UpdateAccountSuccess"]',
+                });
+            }
+        });
+
+    </script>
+}

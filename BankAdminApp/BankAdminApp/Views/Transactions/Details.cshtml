@@ -1,0 +1,113 @@
+﻿@model BankingAdminApp.ViewModels.TransactionViewModel
+
+@{
+    ViewData["Title"] = "Transaction Details";
+}
+
+<h4>@ViewData["Title"] </h4>
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.id_number)
+    </dt>
+    <dd class="col-sm-10">
+        : @Html.DisplayFor(model => model.id_number)
+    </dd>
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.account_number)
+    </dt>
+    <dd class="col-sm-10">
+        : @Html.DisplayFor(model => model.account_number)
+    </dd>
+</dl>
+<hr />
+
+<h4>Update @ViewData["Title"]</h4>
+<div class="row">
+    <span class="help-block">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    </span>
+    <div class="col-md-12">
+        <form asp-action="Details">
+            <input type="hidden" asp-for="code" />
+            <input type="hidden" asp-for="account_code" />
+            <input type="hidden" asp-for="account_number" />
+            <input type="hidden" asp-for="id_number" />
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label asp-for="description" class="control-label required"></label>
+                    <textarea asp-for="description" class="form-control" rows="5" placeholder="Enter description"></textarea>
+                    <span asp-validation-for="description" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+
+                    <div class="form-group ">
+                        <label asp-for="amount" class="control-label required"></label>
+                        <input asp-for="amount" class="form-control" placeholder="Enter amount with two decimal points" />
+                        <span asp-validation-for="amount" class="text-danger"></span>
+                    </div>
+                    <div class="form-group ">
+                        <label asp-for="transaction_date" class="control-label required"></label>
+                        <input asp-format="{0:dd/MM/yyyy}" placeholder="Choose date" asp-for="transaction_date" class="form-control" />
+                        <span asp-validation-for="transaction_date" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <input id="btnSubmit" type="button" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Details" asp-controller="Accounts" asp-route-code="@Model.account_code">Back to Account Details</a>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript">
+        $('#amount').keyup(function() { //Event that will fire on each change of textbox value.
+            var myLength = $("#amount").val().length;
+            if (myLength == 1) //To check only when entering first character.
+            {
+                if ($(this).val() === '0') {
+                    $(this).val('');
+                }
+            }
+            if (myLength == 2) //To check only when entering first character.
+            {
+                if ($(this).val() === '-0') {
+                    $(this).val('');
+                }
+            }
+        });
+        $('#transaction_date').datepicker({
+            showOn: 'button',
+            buttonImageOnly: true,
+            autoclose: true,
+            todayHighlight: true,
+            format: "dd-M-yyyy",
+            endDate: '+1d',
+        }).attr('readonly', 'readonly').on('change', function() {
+            $(this).valid();
+        });
+
+        $('#btnSubmit').on('click', function(e) {
+            var form = $(this).parents('form');
+            form.validate();
+            if (form.valid()) {
+                form.submit();
+            }
+        });
+
+        $(document).ready(function() {
+            if ('@TempData["UpdateTransactionSuccess"]' != "") {
+                Swal.fire({
+                    icon: 'success',
+                    title: "Successfully Updated!",
+                    text: '@TempData["UpdateTransactionSuccess"]',
+                })
+            }
+        });
+    </script>
+    }
