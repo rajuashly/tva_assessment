@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankingAdminApp.DataLayer",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankingAdminApp.Repository", "BankingAdminApp.Repository\BankingAdminApp.Repository.csproj", "{7AFA7969-4200-47EC-BBB9-F2AD9EFFC510}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankingAdminAppTests", "BankingAdminAppTests\BankingAdminAppTests.csproj", "{B95EC093-9CCB-4632-A15F-3FFF12DE61E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{7AFA7969-4200-47EC-BBB9-F2AD9EFFC510}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AFA7969-4200-47EC-BBB9-F2AD9EFFC510}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AFA7969-4200-47EC-BBB9-F2AD9EFFC510}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B95EC093-9CCB-4632-A15F-3FFF12DE61E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B95EC093-9CCB-4632-A15F-3FFF12DE61E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B95EC093-9CCB-4632-A15F-3FFF12DE61E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B95EC093-9CCB-4632-A15F-3FFF12DE61E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -5,7 +5,9 @@
 }
 
 <h4>@ViewData["Title"]</h4>
-<dl class="row">
+<hr />
+
+<dl class="row" style="color:gray">
     <dt class="col-sm-2">
         @Html.DisplayNameFor(model => model.account_number)
     </dt>
@@ -19,8 +21,9 @@
         : @Html.DisplayFor(model => model.id_number)
     </dd>
 </dl>
+<h5>Update Account Details</h5>
 <hr />
-<h4>Update Account Details</h4>
+
 <div class="row">
     <span class="help-block">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -32,8 +35,8 @@
             <input type="hidden" asp-for="id_number" />
             <div class="row">
                 <div class="form-group col-md-4">
-                    <label asp-for="account_number" class="control-label"></label>
-                    <input asp-for="account_number" class="form-control required" />
+                    <label asp-for="account_number" class="control-label required"></label>
+                    <input asp-for="account_number" class="form-control " />
                     <span asp-validation-for="account_number" class="text-danger"></span>
                 </div>
             </div>
@@ -46,8 +49,10 @@
 <div>
     <a asp-action="Details" asp-controller="Persons" asp-route-code="@Model.person_code">Back to Person Details</a>
 </div>
-<hr />
+<br />
 <h4>Transactions</h4>
+<hr />
+
 @if (Convert.ToBoolean(Model.is_active))
 {
     <p>

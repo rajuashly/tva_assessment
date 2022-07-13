@@ -1,6 +1,8 @@
 ﻿using BankingAdminApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Net;
+using System.Web;
 
 namespace BankingAdminApp.Controllers
 {
@@ -22,9 +24,20 @@ namespace BankingAdminApp.Controllers
         {
             return View();
         }
+        [HttpGet]
         public IActionResult Contact()
         {
             return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Contact(string subject,  string body)
+        {
+            var mailto = "ashlyraju27@gmail.com";
+            body = WebUtility.UrlEncode(body);
+            subject = WebUtility.UrlEncode(subject);
+            //body = body.Replace(Environment.NewLine, "<br/>");
+            return Redirect($"mailto:{mailto}?subject={subject}&body={body}");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

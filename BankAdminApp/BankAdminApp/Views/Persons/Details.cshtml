@@ -6,6 +6,7 @@
 
 <div>
     <h4>Person Details</h4>
+    <hr />
     <div class="row">
         <span class="help-block">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -39,10 +40,12 @@
     <div>
         <a asp-action="Index">Back to Persons List</a>
     </div>
-    <hr />
+    <br />
 
 
     <h4>Person Accounts</h4>
+    <hr />
+
     <p>
         <a asp-action="Create" asp-controller="Accounts" asp-route-person_code="@Model.code" asp-route-id_number="@Model.id_number">Create New</a>
     </p>

@@ -16,17 +16,18 @@ namespace BankingAdminApp.Repository.Repositories
         { }
         public Accounts Get(int code)
         {
-            var result = _context.Accounts.Include(x => x.Person).Include(x => x.Transactions).Where(x => x.code == code).FirstOrDefault();
+            Accounts account = new Accounts();
+            try
+            {
+                account = _context.Accounts.Include(x => x.Person).Include(x => x.Transactions).Where(x => x.code == code).FirstOrDefault();
+                
+            }
+            catch (Exception ex)
+            {
 
-            if (result == null)
-            {
-                return null;
             }
-            else
-            {
-                result = _context.Accounts.Where(x => x.code == result.person_code).FirstOrDefault();
-            }
-            return result;
+
+            return account;
         }
 
         public List<Accounts> GetByPersonCode(int person_code)

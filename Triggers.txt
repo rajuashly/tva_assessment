@@ -1,0 +1,62 @@
+USE [BankingAdminAppDB]
+GO
+
+CREATE TRIGGER trg_AuditAccountRecord on Accounts
+AFTER UPDATE, INSERT
+AS 
+BEGIN
+
+	SET NOCOUNT ON;
+	
+	INSERT INTO Audit_Accounts
+	(code, person_code, account_number, outstanding_balance, is_active, UpdatedBy, UpdatedOn)
+	SELECT i.code, i.person_code, i.account_number, i.outstanding_balance, i.is_active, SUSER_SNAME(), GetDate()
+	FROM Accounts t
+	INNER JOIN INSERTED i on t.code = i.code
+
+END
+GO
+
+USE [BankingAdminAppDB]
+GO
+/****** Object:  Trigger [dbo].[trg_AuditPersonsRecord]    Script Date: 2022/07/13 14:43:43 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER TRIGGER [dbo].[trg_AuditPersonsRecord] on [dbo].[Persons]
+AFTER UPDATE, INSERT
+AS 
+BEGIN
+
+	SET NOCOUNT ON;
+	
+	INSERT INTO Audit_Persons
+	(code, name, surname, id_number, is_deleted, UpdatedBy, UpdatedOn)
+	SELECT i.code, i.name, i.surname, i.id_number, i.is_deleted, SUSER_SNAME(), GetDate()
+	FROM Persons p
+	INNER JOIN INSERTED i on p.code = i.code
+
+END
+
+USE [BankingAdminAppDB]
+GO
+
+
+CREATE TRIGGER trg_AuditTransactionsRecord on Transactions
+AFTER UPDATE, INSERT
+AS 
+BEGIN
+
+	SET NOCOUNT ON;
+	
+	INSERT INTO Audit_Transactions
+	(account_code, transaction_date, capture_date, amount, description, UpdatedBy, UpdatedOn)
+	SELECT i.account_code, i.transaction_date, i.capture_date, i.amount, i.description, SUSER_SNAME(), GetDate()
+	FROM Transactions t
+	INNER JOIN INSERTED i on t.code = i.code
+
+END
+GO
+
+//Check trigger for calculating account outstanding balance

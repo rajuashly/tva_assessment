@@ -16,9 +16,9 @@ namespace BankingAdminApp.ViewModels
         [MaxLength(50, ErrorMessage = "{0} cannot be greater than {1} characters")]
         [Display(Name = "Account Number")]
         [DisplayFormat(ConvertEmptyStringToNull = false)]
+        [RegularExpression(@"^[0-9]{1,50}$", ErrorMessage = "Only numbers are allowed")]
         [Remote("Exists", "Accounts", HttpMethod = "POST", AdditionalFields = "code", ErrorMessage = "{0} number already exists")]
         public string account_number { get; set; }
-
         public List<Transactions>? transactions { get; set; }
 
         public bool? is_active { get; set; }
