@@ -53,20 +53,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Vendor\moment\src\lib\create\" />
-    <Folder Include="wwwroot\Vendor\moment\src\lib\duration\" />
-    <Folder Include="wwwroot\Vendor\moment\src\lib\format\" />
-    <Folder Include="wwwroot\Vendor\moment\src\lib\locale\" />
-    <Folder Include="wwwroot\Vendor\moment\src\lib\moment\" />
-    <Folder Include="wwwroot\Vendor\moment\src\lib\parse\" />
-    <Folder Include="wwwroot\Vendor\moment\src\lib\units\" />
-    <Folder Include="wwwroot\Vendor\moment\src\lib\utils\" />
-    <Folder Include="wwwroot\Vendor\moment\src\locale\" />
-    <Folder Include="wwwroot\Vendor\moment\templates\" />
-    <Folder Include="wwwroot\Vendor\pdfmake\libs\FileSaver.js\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="wwwroot\js\site.js" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map" />
     <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map" />
@@ -118,7 +104,6 @@
     <None Include="wwwroot\lib\sweetalert2\sweetalert2.min.js" />
     <None Include="wwwroot\lib\toastr\build\toastr.js.map" />
     <None Include="wwwroot\lib\toastr\build\toastr.min.js" />
-    <None Include="wwwroot\Vendor\sweetalert\lib\.sass-cache\7981e80cc38cc883c439302cccda55b50fb7fde4\sweet-alert.scssc" />
   </ItemGroup>
 
   <ItemGroup>
