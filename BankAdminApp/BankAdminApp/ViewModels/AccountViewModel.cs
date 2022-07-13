@@ -23,8 +23,8 @@ namespace BankingAdminApp.ViewModels
 
         public bool? is_active { get; set; }
 
-        //[Display(Name = "Outstanding Balance")]
-        //public decimal? outstanding_balance { get; set; }
+        [Display(Name = "Balance")]
+        public decimal? outstanding_balance { get; set; }
 
     }
 }

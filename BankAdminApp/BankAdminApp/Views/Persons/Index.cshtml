@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<BankingAdminApp.DataLayer.EntityClasses.Persons>
+@inject Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> config
 
 @{
     ViewData["Title"] = "Index";
@@ -20,7 +21,7 @@
                     Name
                 </th>
                 <th>
-                    Id Number
+                    ID Number
                 </th>
                 <th>Accounts</th>
                 <th width="15%">Actions</th>
@@ -29,6 +30,9 @@
         <tbody>
             @foreach (var item in Model)
             {
+@*                var values = $"code={item.code}";
+                var secret = CryptoEngine.Encrypt(values, config.Value.Key);
+                var url = Url.Action("Details", new { secret });*@
                 var accounts = item.Accounts.Select(x => x.account_number).ToList();
                 <tr>
                     <td>
@@ -55,7 +59,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.id_number)
                     </td>
-                    <td >
+                    <td>
                         @if (item.Accounts != null && item.Accounts.Count() > 0)
                         {
                             @Html.DropDownListFor(modelItem => item.Accounts, new SelectList(item.Accounts, "account_number","account_number"), new { @class="form-control"})

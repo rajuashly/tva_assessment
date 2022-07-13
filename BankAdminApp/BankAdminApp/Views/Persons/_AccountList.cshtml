@@ -23,6 +23,16 @@
         <tbody>
             @foreach (var item in Model)
             {
+                var balance = Convert.ToDecimal(item.outstanding_balance).ToString("0.00").Replace(',', '.');
+                var balanceColor = "gray";
+                if (item.outstanding_balance > 0)
+                {
+                    balanceColor = "green";
+                }
+                else if (item.outstanding_balance < 0)
+                {
+                    balanceColor = "red";
+                }
                 var outstanding_balance = item.outstanding_balance.ToString("0.00").Replace(',', '.');
                 var isOpen = item.is_active;
                 <tr>
@@ -30,8 +40,8 @@
 
                         @Html.DisplayFor(modelItem => item.account_number)
                     </td>
-                    <td style="text-align:right">
-                        @Html.DisplayFor(modelItem => outstanding_balance)
+                    <td style="text-align:right;color:@balanceColor">
+                        @Html.DisplayFor(modelItem => balance)
                     </td>
                     @if (isOpen)
                     {

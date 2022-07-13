@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BankingAdminApp.DataLayer.EntityClasses;
+using BankingAdminApp.Helpers.Controllers;
 using BankingAdminApp.Repository;
 using BankingAdminApp.Repository.Repositories;
 using BankingAdminApp.ViewModels;
@@ -29,7 +30,9 @@ namespace BankingAdminApp.Controllers
             return View(_personsRepository.GetAll());
         }
 
-        // GET: PersonsController/Details/5
+
+        //[Route("Details"), HttpGet]
+        //[EncryptedParameters("secret")]
         public ActionResult Details(int? code)
         {
             if (code == null)

@@ -150,10 +150,6 @@ namespace BankingAdminApp.Controllers
             return View(vm);
         }
 
-        [HttpPost]
-        public JsonResult Exists(string account_number, int code)
-        {
-            return Json(!_accountsRepository.Exists(account_number, code));
-        }
+
     }
 }

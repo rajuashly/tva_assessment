@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BankingAdminApp.CommonLibrary\BankingAdminApp.CommonLibrary.csproj" />
     <ProjectReference Include="..\BankingAdminApp.DataLayer\BankingAdminApp.DataLayer.csproj" />
   </ItemGroup>
 

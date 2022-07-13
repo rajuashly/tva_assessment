@@ -8,7 +8,7 @@
     <table id="displayTable" class="table table-striped" width="100%">
         <thead>
             <tr>
-                <th>
+                <th width="20%">
                     Description
                 </th>
                 <th>
@@ -20,8 +20,8 @@
                 <th>
                     Date Captured
                 </th>
-                <th>
-
+                <th width="20%">
+                    Action
                 </th>
             </tr>
         </thead>
@@ -31,12 +31,21 @@
                 var formattedTransactionDate = item.transaction_date.ToString("dd-MMM-yyyy");
                 var formattedCaptureDate = item.capture_date.ToString("dd-MMM-yyyy HH:mm:ss tt");
                 var amount = item.amount.ToString("0.00").Replace(',', '.');
+                var amountColor = "gray";
+                if (item.amount > 0)
+                {
+                    amountColor = "green";
+                }
+                else if (item.amount < 0)
+                {
+                    amountColor = "red";
+                }
                 <tr>
                     <td>
 
                         @Html.DisplayFor(modelItem => item.description)
                     </td>
-                    <td style="text-align:right">
+                    <td style="text-align:right;color:@amountColor">
                         @Html.DisplayFor(modelItem => amount)
                     </td>
 

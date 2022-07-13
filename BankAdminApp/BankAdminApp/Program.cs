@@ -1,11 +1,13 @@
 using BankingAdminApp.DataLayer.DBContext;
 using BankingAdminApp.DataLayer.EntityClasses;
+using BankingAdminApp.Models;
 using BankingAdminApp.Repository;
 using BankingAdminApp.Repository.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DefaultDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.Configure<CryptoEngine.Secrets>(builder.Configuration.GetSection("Secrets"));
 builder.Services.AddScoped<IPersonsRepository<Persons>, PersonsRepository>();
 builder.Services.AddScoped<IAccountsRepository<Accounts>, AccountsRepository>();
 builder.Services.AddScoped<ITransactionsRepository<Transactions>, TransactionsRepository>();

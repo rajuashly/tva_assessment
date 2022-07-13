@@ -1,33 +1,43 @@
 ﻿@{
     ViewData["Title"] = "About";
 }
-<h4>@ViewData["Title"] </h4>
-<hr />
-<div class="aboutContent shadow-top" style="height: 100%;">
-    <div class="aboutmeinfo">
-        <label><b>Banking Admin App</b></label>
-        <br />
-        <div>
-            <p>This application was built using .net 6 together with SQL back-end.<p/>
-            <p>The purpose of this application is to allow the admin of an organization to capture people together with their relative accounts. The admin of the application will have the ability to manage people and accounts, as well as add and manage transactions of each acccount respectively.<p/>
-            <p>Accounts can be closed and re-opened with ease.<p/>
-            <p>This application uses bootstrap extensively which enabled the use of datatables to display data in tables. Datatables built-in functinoality with jquery enables data to be filtered, sorted and displayed with easy.<p/>
-            <p>The use of database triggers were used, more importantly fore re-calculating the account outstanding balances whenever transactions was added or modified. Triggers were also used for the purpose of auditing.<p/>
+
+<div class="col-12 col-md-12 col-lg-12 pb-5">
+    <div class="shadow-top" style="height: 100%;">
+        <div class="divinfo">
+            <h4>@ViewData["Title"] </h4>
+            <hr />
+            <div>
+                <p>The purpose of this application was to allow the admin of an organization to capture people together with their respective accounts. They will also have the ability to add transactions for these accounts. People, accounts and transactions can be modified after they have been created.<p />
+                <p>Accounts can be closed and re-opened with ease.<p />
+                <p>This application uses bootstrap extensively which enables the use of datatables to display data in tables. Datatables built-in functinoality with jquery enables data to be searched, sorted or expoted easily.<p />
+                <p>This application was built using .net 6 together with SQL as the database back-end.<p />
+                <p>The use of SQL database table triggers were used, more importantly for re-calculating the account outstanding balances whenever a new transaction is added, or modified thereof. Triggers were also used for the purpose of storing data for audit purposes.<p />
+            </div>
         </div>
     </div>
 </div>
-
 <style>
-    .aboutContent {
-        background-color: white;
+    body {
+        background: url('../images/bgimage.jpg') no-repeat center center fixed;
+        height: 100%;
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
     }
 
-    .aboutmeinfo {
+    .divinfo {
         padding: 50px;
         box-shadow: 0 0 25px lightgray;
+        background: rgba(255,255,255, 0.8);
     }
-
-    .aboutValue {
-        margin-top: -12px;
+    
+    .footer {
+       display:none;
     }
 </style>

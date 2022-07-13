@@ -3,7 +3,10 @@
 @{
     ViewData["Title"] = "Create Account";
 }
-
+<div >
+    <a asp-action="Details" asp-controller="Persons" asp-route-code="@Model.person_code">&laquo; Back to Person Details</a>
+</div>
+<br />
 <h4>@ViewData["Title"] </h4>
 <hr />
     <dl class="row">
@@ -19,7 +22,7 @@
     <span class="help-block">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     </span>
-    <div class="col-md-6">
+    <div class="col-md-4">
         <form asp-action="Create">
             <input type="hidden" asp-for="person_code" />
             <div class="form-group">
@@ -33,9 +36,7 @@
         </form>
     </div>
 </div>
-<div>
-    <a asp-action="Details" asp-controller="Persons" asp-route-code="@Model.person_code">Back to Person Details</a>
-</div>
+
 
 @section Scripts {
     @{

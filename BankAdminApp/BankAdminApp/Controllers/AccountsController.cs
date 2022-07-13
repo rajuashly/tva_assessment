@@ -36,6 +36,7 @@ namespace BankingAdminApp.Controllers
                 vm.code = account.code;
                 vm.account_number = account.account_number;
                 vm.is_active = account.is_active;
+                vm.outstanding_balance = account.outstanding_balance;
                 if (account.Person != null && account.Person.code > 0)
                 {
                     vm.id_number = account.Person.id_number;
@@ -50,7 +51,7 @@ namespace BankingAdminApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Details(int code, [Bind("account_number, code, id_number, person_code")] AccountViewModel vm)
+        public ActionResult Details(int code, [Bind("account_number, code, id_number, person_code, outstanding_balance")] AccountViewModel vm)
         {
             if (code != vm.code)
             {
