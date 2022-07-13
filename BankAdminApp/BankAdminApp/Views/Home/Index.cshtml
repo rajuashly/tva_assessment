@@ -1,8 +1,34 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Welcome to Banking Admin!";
 }
 
-<div class="text-center">
-    <h2 class="display-4">Welcome to Banking Admin Web Application</h2>
-    <p>This website is helps administrators to manage people, their accounts and transactions.</p>
+<h4>@ViewData["Title"] </h4>
+<hr />
+<div class="homeContent shadow-top" style="height: 100%;">
+    <div class="homeinfo">
+        <br />
+        <div>
+            <p>This application was built using .net 6 together with SQL back-end.<p />
+            <p>The purpose of this application is to allow the admin of an organization to capture people together with their relative accounts. The admin of the application will have the ability to manage people and accounts, as well as add and manage transactions of each acccount respectively.<p />
+            <p>Accounts can be closed and re-opened with ease.<p />
+            <p>This application uses bootstrap extensively which enabled the use of datatables to display data in tables. Datatables built-in functinoality with jquery enables data to be filtered, sorted and displayed with easy.<p />
+            <p>The use of database triggers were used, more importantly fore re-calculating the account outstanding balances whenever transactions was added or modified. Triggers were also used for the purpose of auditing.<p />
+        </div>
+    </div>
 </div>
+
+<style>
+    body {
+        background: url('images/bgimage.jpg') no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+
+    main {
+        background: rgba(255,255,255, 0.6);
+        padding:50px;
+        height:100%;
+    }
+</style>
