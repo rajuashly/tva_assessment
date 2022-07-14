@@ -1,5 +1,6 @@
 ﻿using BankingAdminApp.DataLayer.EntityClasses;
 using BankingAdminApp.Helpers;
+using BankingAdminApp.Helpers.Controllers;
 using BankingAdminApp.Repository.Repositories;
 using BankingAdminApp.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -13,45 +14,42 @@ namespace BankingAdminApp.Controllers
         private readonly IPersonsRepository<Persons> _personsRepository;
         private readonly IAccountsRepository<Accounts> _accountsRepository;
         private readonly ITransactionsRepository<Transactions> _transactionRepository;
-        public AccountsController(IAccountsRepository<Accounts> accountsRepository, IPersonsRepository<Persons> personsRepository, ITransactionsRepository<Transactions> transactionRepository)
+        Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> _options;
+
+        public AccountsController(IAccountsRepository<Accounts> accountsRepository, IPersonsRepository<Persons> personsRepository, ITransactionsRepository<Transactions> transactionRepository, Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> options)
         {
             _accountsRepository = accountsRepository;
             _personsRepository = personsRepository;
             _transactionRepository = transactionRepository;
+            _options = options;
+
         }
         [HttpGet]
-        public ActionResult Details(string? secret)
+        [EncryptedParameters("secret")]
+        public ActionResult Details(int? account_code)
         {
             AccountViewModel vm = new AccountViewModel();
-
-            if (!string.IsNullOrWhiteSpace(secret))
+    
+            var account = _accountsRepository.Get(Convert.ToInt32(account_code));
+            if (account != null && account.code > 0)
             {
-                var value = CryptoEngine.DecryptSecretForArg(secret, "account_code");
-                if (!string.IsNullOrWhiteSpace(value))
+                vm.code = account.code;
+                vm.account_number = account.account_number;
+                vm.is_active = account.is_active;
+                vm.outstanding_balance = account.outstanding_balance;
+                if (account.Person != null && account.Person.code > 0)
                 {
-                    var account = _accountsRepository.Get(Convert.ToInt32(value));
-                    if (account != null && account.code > 0)
-                    {
-                        vm.code = account.code;
-                        vm.account_number = account.account_number;
-                        vm.is_active = account.is_active;
-                        vm.outstanding_balance = account.outstanding_balance;
-                        if (account.Person != null && account.Person.code > 0)
-                        {
-                            vm.id_number = account.Person.id_number;
-                            vm.person_code = account.Person.code;
-                        }
-                        vm.transactions = account.Transactions.ToList();
-                        return View(vm);
-                    }
+                    vm.id_number = account.Person.id_number;
+                    vm.person_code = account.Person.code;
                 }
+                vm.transactions = account.Transactions.ToList();
+                return View(vm);
             }
             return NotFound();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Details(int code, [Bind("account_number, code, id_number, person_code, outstanding_balance")] AccountViewModel vm)
+        public ActionResult Details(int code, [Bind("account_number, code, id_number, person_code, outstanding_balance, is_active")] AccountViewModel vm)
         {
             if (code != vm.code)
             {
@@ -89,21 +87,18 @@ namespace BankingAdminApp.Controllers
         }
 
         // GET: AccountsController/Create
-        public ActionResult Create(string secret)
+        [EncryptedParameters("secret")]
+        public ActionResult Create(int? code)
         {
-            if (!string.IsNullOrWhiteSpace(secret))
+            if (code != null)
             {
-                var value = CryptoEngine.DecryptSecretForArg(secret, "person_code");
-                if (!string.IsNullOrWhiteSpace(value))
+                var person = _personsRepository.Get(Convert.ToInt32(code));
+                if (person != null && person.code > 0)
                 {
-                    var person = _personsRepository.Get(Convert.ToInt32(value));
-                    if (person != null && person.code > 0)
-                    {
-                        AccountViewModel vm = new AccountViewModel();
-                        vm.person_code = person.code;
-                        vm.id_number = person.id_number;
-                        return View(vm);
-                    }
+                    AccountViewModel vm = new AccountViewModel();
+                    vm.person_code = person.code;
+                    vm.id_number = person.id_number;
+                    return View(vm);
                 }
             }
 
@@ -122,7 +117,9 @@ namespace BankingAdminApp.Controllers
                 if (Id > 0)
                 {
                     TempData["AccountCreateSuccess"] = $"Account Number {vm.account_number} was successfully added.";
-                    return RedirectToAction("Details", "Persons", new { code = vm.person_code });
+                    var values = $"code={vm.person_code}";
+                    var secret = CryptoEngine.Encrypt(values, _options.Value.Key);
+                    return RedirectToAction("Details", "Persons", new { secret = secret });
                 }
                 else
                 {

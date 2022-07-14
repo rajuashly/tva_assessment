@@ -14,8 +14,21 @@
     {
         balanceColor = "red";
     }
-    var values = $"code={Model.code}";
+    var values = $"code={Model.person_code}";
     var secret = CryptoEngine.Encrypt(values, config.Value.Key);
+    var isOpen = Model.is_active;
+    var Status = string.Empty;
+    var StatusColor = string.Empty;
+    @if (isOpen == true)
+    {
+        Status = "Open";
+        StatusColor = "green";
+    }
+    else
+    {
+        Status = "Closed";
+        StatusColor = "red";
+    }
 }
 <div>
     <a asp-action="Details" asp-controller="Persons" asp-route-secret="@secret">&laquo; Back to Person Details</a>
@@ -25,23 +38,29 @@
 <hr />
 
 <dl class="row" style="color:gray">
-    <dt class="col-sm-2">
+    <dt class="col-sm-3">
         @Html.DisplayNameFor(model => model.account_number)
     </dt>
-    <dd class="col-sm-10">
-        : @Html.DisplayFor(model => model.account_number)
+    <dd class="col-sm-3">
+         : @Html.DisplayFor(model => model.account_number)
     </dd>
-    <dt class="col-sm-2">
+    <dt class="col-sm-3">
         @Html.DisplayNameFor(model => model.id_number)
     </dt>
-    <dd class="col-sm-10">
-        : @Html.DisplayFor(model => model.id_number)
+    <dd class="col-sm-3">
+         : @Html.DisplayFor(model => model.id_number)
     </dd>
-    <dt class="col-sm-2">
+    <dt class="col-sm-3">
         @Html.DisplayNameFor(model => model.outstanding_balance)
     </dt>
-    <dd class="col-sm-10" >
-        : <label style="color:@balanceColor">@balance</label> 
+    <dd class="col-sm-3">
+         : <label style="color:@balanceColor">@balance</label>
+    </dd>
+     <dt class="col-sm-3">
+        @Html.DisplayNameFor(model => model.is_active)
+    </dt>
+    <dd class="col-sm-3">
+        : <label style="color:@StatusColor">@Status</label>
     </dd>
 </dl>
 <h5>Update Account Details</h5>
@@ -54,6 +73,7 @@
     <div class="col-md-12">
         <form asp-action="Details">
             <input type="hidden" asp-for="code" />
+            <input type="hidden" asp-for="is_active" />
             <input type="hidden" asp-for="person_code" />
             <input type="hidden" asp-for="id_number" />
             <input type="hidden" asp-for="outstanding_balance" />
@@ -86,59 +106,59 @@
 
 
     @section Scripts {
-        @{
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
-        }
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
-        <script>
-            $('#btnSubmit').on('click', function(e) {
-                var form = $(this).parents('form');
-                form.validate();
-                if (form.valid()) {
-                    form.submit();
-                }
+    <script>
+        $('#btnSubmit').on('click', function(e) {
+            var form = $(this).parents('form');
+            form.validate();
+            if (form.valid()) {
+                form.submit();
+            }
+        });
+
+        $(document).ready(function() {
+            if ('@TempData["UpdateAccountSuccess"]' != "") {
+                Swal.fire({
+                    icon: 'success',
+                    title: "Successfully Updated!",
+                    text: '@TempData["UpdateAccountSuccess"]',
+                })
+            }
+            if ('@TempData["TransactionCreateSuccess"]' != "") {
+                Swal.fire({
+                    icon: 'success',
+                    title: "Successfully Created!",
+                    text: '@TempData["TransactionCreateSuccess"]',
+                })
+            }
+        });
+
+
+        //Datatable
+        $(function() {
+            // JSON data
+            var chartDataUrl = '@Url.Action("tableJsonData", "Tables")';
+
+            $('#displayTable').dataTable({
+                dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>tp",
+                "order": [[2, "desc"]],
+                responsive: true,
+                buttons: [
+                    { extend: 'copy', className: 'btn-sm' },
+                    { extend: 'csv', title: 'Transactions', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
+                    { extend: 'pdf', title: 'Transactions', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
+                    { extend: 'print', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } }
+                ],
+
+                columnDefs: [
+                    { "orderable": false, "targets": [4] },
+                    { "searchable": false, "targets": [2, 4] }
+                ]
             });
+        });
 
-            $(document).ready(function() {
-                if ('@TempData["UpdateAccountSuccess"]' != "") {
-                    Swal.fire({
-                        icon: 'success',
-                        title: "Successfully Updated!",
-                        text: '@TempData["UpdateAccountSuccess"]',
-                    })
-                }
-                if ('@TempData["TransactionCreateSuccess"]' != "") {
-                    Swal.fire({
-                        icon: 'success',
-                        title: "Successfully Created!",
-                        text: '@TempData["TransactionCreateSuccess"]',
-                    })
-                }
-            });
-
-
-            //Datatable
-            $(function() {
-                // JSON data
-                var chartDataUrl = '@Url.Action("tableJsonData", "Tables")';
-
-                $('#displayTable').dataTable({
-                    dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>tp",
-                    "order": [[2, "desc"]],
-                    responsive: true,
-                    buttons: [
-                        { extend: 'copy', className: 'btn-sm' },
-                        { extend: 'csv', title: 'Transactions', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
-                        { extend: 'pdf', title: 'Transactions', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
-                        { extend: 'print', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } }
-                    ],
-
-                    columnDefs: [
-                        { "orderable": false, "targets": [4] },
-                        { "searchable": false, "targets": [2, 4] }
-                    ]
-                });
-            });
-
-        </script>
+    </script>
     }

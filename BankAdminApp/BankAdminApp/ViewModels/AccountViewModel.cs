@@ -21,6 +21,7 @@ namespace BankingAdminApp.ViewModels
         public string account_number { get; set; }
         public List<Transactions>? transactions { get; set; }
 
+        [Display(Name = "Status")]
         public bool? is_active { get; set; }
 
         [Display(Name = "Balance")]

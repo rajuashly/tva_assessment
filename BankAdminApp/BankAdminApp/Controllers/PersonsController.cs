@@ -15,14 +15,14 @@ namespace BankingAdminApp.Controllers
     {
         private readonly IPersonsRepository<Persons> _personsRepository;
         private readonly IAccountsRepository<Accounts> _accountsRepository;
-        Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> _optins;
+        Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> _options;
 
         private Mapper _mapper;
-        public PersonsController(IPersonsRepository<Persons> personsRepository, IAccountsRepository<Accounts> accountsRepository, Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> optins)
+        public PersonsController(IPersonsRepository<Persons> personsRepository, IAccountsRepository<Accounts> accountsRepository, Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> options)
         {
             _personsRepository = personsRepository;
             _accountsRepository = accountsRepository;
-            _optins = optins;
+            _options = options;
             var config = new MapperConfiguration(cfg => cfg.CreateMap<Persons, PersonViewModel>());
             _mapper = new Mapper(config);
         }
@@ -35,21 +35,18 @@ namespace BankingAdminApp.Controllers
         }
 
 
-        public ActionResult Details(string? secret)
+        [EncryptedParameters("secret")]
+        public ActionResult Details(int? code)
         {
-            if (!string.IsNullOrEmpty(secret))
+            if (code != null)
             {
-                var value = CryptoEngine.DecryptSecretForArg(secret, "code");
-                if (!string.IsNullOrWhiteSpace(value))
+                var person = _personsRepository.Get(Convert.ToInt32(code));
+                if (person != null && person.code > 0)
                 {
-                    var person = _personsRepository.Get(Convert.ToInt32(value));
-                    if (person != null && person.code > 0)
-                    {
-                        PersonViewModel vm = new PersonViewModel();
-                        vm = _mapper.Map<PersonViewModel>(person);
-                        vm.accounts = _accountsRepository.GetByPersonCode(person.code);
-                        return View(vm);
-                    }
+                    PersonViewModel vm = new PersonViewModel();
+                    vm = _mapper.Map<PersonViewModel>(person);
+                    vm.accounts = _accountsRepository.GetByPersonCode(person.code);
+                    return View(vm);
                 }
             }
             return NotFound();
@@ -152,7 +149,7 @@ namespace BankingAdminApp.Controllers
             }
 
             var values = $"code={person_code}";
-            var secret = CryptoEngine.Encrypt(values, _optins.Value.Key);
+            var secret = CryptoEngine.Encrypt(values, _options.Value.Key);
             return RedirectToAction("Details", "Persons", new { secret = secret });
         }
 
@@ -168,7 +165,7 @@ namespace BankingAdminApp.Controllers
                 TempData["CloseAccountFailure"] = $"Failed to close account, please try again.";
             }
             var values = $"code={person_code}";
-            var secret = CryptoEngine.Encrypt(values, _optins.Value.Key);
+            var secret = CryptoEngine.Encrypt(values, _options.Value.Key);
             return RedirectToAction("Details", "Persons", new { secret = secret });
         }
     }

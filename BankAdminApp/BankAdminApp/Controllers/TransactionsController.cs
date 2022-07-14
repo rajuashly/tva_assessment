@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BankingAdminApp.DataLayer.EntityClasses;
 using BankingAdminApp.Helpers;
+using BankingAdminApp.Helpers.Controllers;
 using BankingAdminApp.Repository.Repositories;
 using BankingAdminApp.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -14,43 +15,40 @@ namespace BankingAdminApp.Controllers
         private readonly ITransactionsRepository<Transactions> _transactionRepository;
         private readonly IAccountsRepository<Accounts> _accountsRepository;
         private readonly IPersonsRepository<Persons> _personsRepository;
-        Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> _optins;
+        Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> _options;
         private Mapper _mapper;
-        public TransactionsController(IAccountsRepository<Accounts> accountsRepository, ITransactionsRepository<Transactions> transactionRepository, IPersonsRepository<Persons> personsRepository, Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> optins)
+        public TransactionsController(IAccountsRepository<Accounts> accountsRepository, ITransactionsRepository<Transactions> transactionRepository, IPersonsRepository<Persons> personsRepository, Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> options)
         {
             _accountsRepository = accountsRepository;
             _transactionRepository = transactionRepository;
             _personsRepository = personsRepository;
             var config = new MapperConfiguration(cfg => cfg.CreateMap<Transactions, TransactionViewModel>());
-            _optins = optins;
+            _options = options;
             _mapper = new Mapper(config);
         }
         [HttpGet]
-        public ActionResult Details(string? secret)
+        [EncryptedParameters("secret")]
+        public ActionResult Details(int? code)
         {
-            if (!string.IsNullOrEmpty(secret))
+            if (code != null)
             {
-                var value = CryptoEngine.DecryptSecretForArg(secret, "code");
-                if (!string.IsNullOrWhiteSpace(value))
+                var transacation = _transactionRepository.Get(Convert.ToInt32(code));
+                if (transacation != null && transacation.code > 0)
                 {
-                    var transacation = _transactionRepository.Get(Convert.ToInt32(value));
-                    if (transacation != null && transacation.code > 0)
+                    TransactionViewModel vm = new TransactionViewModel();
+                    vm = _mapper.Map<TransactionViewModel>(transacation);
+                    if (transacation.Account != null && transacation.Account.code > 0)
                     {
-                        TransactionViewModel vm = new TransactionViewModel();
-                        vm = _mapper.Map<TransactionViewModel>(transacation);
-                        if (transacation.Account != null && transacation.Account.code > 0)
+                        vm.account_number = transacation.Account.account_number;
+                        vm.account_code = transacation.Account.code;
+                        vm.transaction_date = transacation.transaction_date.ToString("dd-MMM-yyy");
+                        vm.amount = transacation.amount.ToString("0.00").Replace(',', '.');
+                        var person = _personsRepository.Get(transacation.Account.person_code);
+                        if (person != null && person.code > 0)
                         {
-                            vm.account_number = transacation.Account.account_number;
-                            vm.account_code = transacation.Account.code;
-                            vm.transaction_date = transacation.transaction_date.ToString("dd-MMM-yyy");
-                            vm.amount = transacation.amount.ToString("0.00").Replace(',', '.');
-                            var person = _personsRepository.Get(transacation.Account.person_code);
-                            if (person != null && person.code > 0)
-                            {
-                                vm.id_number = person.id_number;
-                            }
-                            return View(vm);
+                            vm.id_number = person.id_number;
                         }
+                        return View(vm);
                     }
                 }
             }
@@ -101,27 +99,24 @@ namespace BankingAdminApp.Controllers
 
 
         [HttpGet]
-        public ActionResult Create(string? secret)
+        [EncryptedParameters("secret")]
+        public ActionResult Create(int? code)
         {
-            if (!string.IsNullOrEmpty(secret))
+            if (code != null)
             {
-                var value = CryptoEngine.DecryptSecretForArg(secret, "code");
-                if (!string.IsNullOrWhiteSpace(value))
-                {
-                    TransactionViewModel vm = new TransactionViewModel();
-                    vm.account_code = Convert.ToInt32(value);
-                    var account = _accountsRepository.Get(vm.account_code);
+                TransactionViewModel vm = new TransactionViewModel();
+                vm.account_code = Convert.ToInt32(code);
+                var account = _accountsRepository.Get(vm.account_code);
 
-                    if (account != null && account.code > 0)
+                if (account != null && account.code > 0)
+                {
+                    vm.account_number = account.account_number;
+                    if (account.Person != null && account.Person.code > 0)
                     {
-                        vm.account_number = account.account_number;
-                        if (account.Person != null && account.Person.code > 0)
-                        {
-                            vm.id_number = account.Person.id_number;
-                        }
+                        vm.id_number = account.Person.id_number;
                     }
-                    return View(vm);
                 }
+                return View(vm);
             }
             return NotFound();
         }
@@ -143,7 +138,7 @@ namespace BankingAdminApp.Controllers
                 {
                     TempData["TransactionCreateSuccess"] = $"Transaction was successfully added.";
                     var values = $"account_code={vm.account_code}";
-                    var secret = CryptoEngine.Encrypt(values, _optins.Value.Key);
+                    var secret = CryptoEngine.Encrypt(values, _options.Value.Key);
                     return RedirectToAction("Details", "Accounts", new { secret = secret });
                 }
                 else
