@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Page Not Found";
+}
+
+<div class="col-12 col-md-12 col-lg-12 pb-5">
+    <div class="shadow-top" style="height: 100%;">
+        <div class="divinfo">
+            <h4>@ViewData["Title"] </h4>
+            <hr />
+            <div>
+                <p>Oops! The requested url was not found.<p />
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    body {
+        background: url('../images/bgimage.jpg') no-repeat center center fixed;
+        height: 100%;
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+
+    .divinfo {
+        padding: 50px;
+        box-shadow: 0 0 25px lightgray;
+        background: rgba(255,255,255, 0.8);
+    }
+    
+    .footer {
+       display:none;
+    }
+</style>
