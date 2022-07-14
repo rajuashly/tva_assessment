@@ -3,7 +3,7 @@
 @inject Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> config
 @{
     ViewData["Title"] = "Create Account";
-    var values = $"person_code={Model.person_code}";
+    var values = $"code={Model.person_code}";
     var secret = CryptoEngine.Encrypt(values, config.Value.Key);
 }
 <div>
