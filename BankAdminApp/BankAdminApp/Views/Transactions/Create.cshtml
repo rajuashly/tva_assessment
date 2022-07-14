@@ -1,10 +1,14 @@
 ﻿@model BankingAdminApp.ViewModels.TransactionViewModel
+@using BankingAdminApp.Helpers;
+@inject Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> config
 
 @{
     ViewData["Title"] = "Create Transaction";
+    var values = $"account_code={Model.account_code}";
+    var secret = CryptoEngine.Encrypt(values, config.Value.Key);
 }
 <div>
-    <a asp-action="Details" asp-controller="Accounts" asp-route-code="@Model.account_code">&laquo; Back to Account Details</a>
+    <a asp-action="Details" asp-controller="Accounts" asp-route-secret="@secret">&laquo; Back to Account Details</a>
 </div>
 <br />
 <h4>@ViewData["Title"] </h4>
@@ -33,7 +37,7 @@
         <form asp-action="Create">
             <input type="hidden" asp-for="account_code" />
             <input type="hidden" asp-for="id_number" />
-          <div class="row">
+            <div class="row">
                 <div class="form-group col-md-4">
                     <label asp-for="description" class="control-label required"></label>
                     <textarea asp-for="description" class="form-control" rows="5" placeholder="Enter description"></textarea>
@@ -66,33 +70,33 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script>
-         $('#amount').keyup(function() { //Event that will fire on each change of textbox value.
-            var myLength = $("#amount").val().length;
-            if (myLength == 1) //To check only when entering first character.
-            {
-                if ($(this).val() === '0') {
-                    $(this).val('');
-                }
+<script>
+     $('#amount').keyup(function() { //Event that will fire on each change of textbox value.
+        var myLength = $("#amount").val().length;
+        if (myLength == 1) //To check only when entering first character.
+        {
+            if ($(this).val() === '0') {
+                $(this).val('');
             }
-            if (myLength == 2) //To check only when entering first character.
-            {
-                if ($(this).val() === '-0') {
-                    $(this).val('');
-                }
+        }
+        if (myLength == 2) //To check only when entering first character.
+        {
+            if ($(this).val() === '-0') {
+                $(this).val('');
             }
-        });
+        }
+    });
 
-        $('#transaction_date').datepicker({
-            showOn: 'button',
-            buttonImageOnly: true,
-            autoclose: true,
-            todayHighlight: true,
-            format: "dd-M-yyyy",
-            endDate: '0d',
-        }).attr('readonly', 'readonly').on('change', function() {
-            $(this).valid();
-        });
+    $('#transaction_date').datepicker({
+        showOn: 'button',
+        buttonImageOnly: true,
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd-M-yyyy",
+        endDate: '0d',
+    }).attr('readonly', 'readonly').on('change', function() {
+        $(this).valid();
+    });
 
-    </script>
+</script>
 }

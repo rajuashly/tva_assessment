@@ -1,10 +1,14 @@
 ﻿@model BankingAdminApp.ViewModels.TransactionViewModel
+@using BankingAdminApp.Helpers
+@inject Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> config
 
 @{
     ViewData["Title"] = "Transaction Details";
+    var values = $"account_code={Model.account_code}";
+    var secret = CryptoEngine.Encrypt(values, config.Value.Key);
 }
 <div>
-    <a asp-action="Details" asp-controller="Accounts" asp-route-code="@Model.account_code">&laquo; Back to Account Details</a>
+    <a asp-action="Details" asp-controller="Accounts" asp-route-secret="@secret">&laquo; Back to Account Details</a>
 </div>
 <br />
 <h4>@ViewData["Title"] </h4>
@@ -67,49 +71,49 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script type="text/javascript">
-        $('#amount').keyup(function() { //Event that will fire on each change of textbox value.
-            var myLength = $("#amount").val().length;
-            if (myLength == 1) //To check only when entering first character.
-            {
-                if ($(this).val() === '0') {
-                    $(this).val('');
-                }
+<script type="text/javascript">
+    $('#amount').keyup(function() { //Event that will fire on each change of textbox value.
+        var myLength = $("#amount").val().length;
+        if (myLength == 1) //To check only when entering first character.
+        {
+            if ($(this).val() === '0') {
+                $(this).val('');
             }
-            if (myLength == 2) //To check only when entering first character.
-            {
-                if ($(this).val() === '-0') {
-                    $(this).val('');
-                }
+        }
+        if (myLength == 2) //To check only when entering first character.
+        {
+            if ($(this).val() === '-0') {
+                $(this).val('');
             }
-        });
-        $('#transaction_date').datepicker({
-            showOn: 'button',
-            buttonImageOnly: true,
-            autoclose: true,
-            todayHighlight: true,
-            format: "dd-M-yyyy",
-            endDate: '0d',
-        }).attr('readonly', 'readonly').on('change', function() {
-            $(this).valid();
-        });
+        }
+    });
+    $('#transaction_date').datepicker({
+        showOn: 'button',
+        buttonImageOnly: true,
+        autoclose: true,
+        todayHighlight: true,
+        format: "dd-M-yyyy",
+        endDate: '0d',
+    }).attr('readonly', 'readonly').on('change', function() {
+        $(this).valid();
+    });
 
-        $('#btnSubmit').on('click', function(e) {
-            var form = $(this).parents('form');
-            form.validate();
-            if (form.valid()) {
-                form.submit();
-            }
-        });
+    $('#btnSubmit').on('click', function(e) {
+        var form = $(this).parents('form');
+        form.validate();
+        if (form.valid()) {
+            form.submit();
+        }
+    });
 
-        $(document).ready(function() {
-            if ('@TempData["UpdateTransactionSuccess"]' != "") {
-                Swal.fire({
-                    icon: 'success',
-                    title: "Successfully Updated!",
-                    text: '@TempData["UpdateTransactionSuccess"]',
-                })
-            }
-        });
-    </script>
+    $(document).ready(function() {
+        if ('@TempData["UpdateTransactionSuccess"]' != "") {
+            Swal.fire({
+                icon: 'success',
+                title: "Successfully Updated!",
+                text: '@TempData["UpdateTransactionSuccess"]',
+            })
+        }
+    });
+</script>
     }

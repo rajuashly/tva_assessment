@@ -1,8 +1,10 @@
-﻿@model IEnumerable<BankingAdminApp.DataLayer.EntityClasses.Persons>
+﻿@using BankingAdminApp.Helpers
+@model IEnumerable<BankingAdminApp.DataLayer.EntityClasses.Persons>
 @inject Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> config
 
 @{
     ViewData["Title"] = "Index";
+
 }
 
 <h4>Persons</h4>
@@ -30,9 +32,9 @@
         <tbody>
             @foreach (var item in Model)
             {
-@*                var values = $"code={item.code}";
+                var values = $"code={item.code}";
                 var secret = CryptoEngine.Encrypt(values, config.Value.Key);
-                var url = Url.Action("Details", new { secret });*@
+
                 var accounts = item.Accounts.Select(x => x.account_number).ToList();
                 <tr>
                     <td>
@@ -70,7 +72,7 @@
                         }
                     </td>
                     <td>
-                        <a asp-action="Details" asp-route-code="@item.code" class="btn btn-sm btn-info"><i class="fa fa-eye"></i> View</a>
+                        <a asp-action="Details" asp-route-secret="@secret" class="btn btn-sm btn-info"><i class="fa fa-eye"></i> View</a>
 
                         @if (item.Accounts.Where(x => x.is_active).Count() == 0)
                         {
@@ -85,70 +87,70 @@
 </div>
 
 @section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function() {
-            if ('@TempData["DeletePersonSuccess"]' != "") {
-                Swal.fire({
-                    icon: 'success',
-                    title: "Successfully Deleted!",
-                    text: '@TempData["DeletePersonSuccess"]',
-                })
-            }
-            if ('@TempData["DeletePersonFailure"]' != "") {
-                Swal.fire({
-                    title: "Failed to delete person",
-                    text: '@TempData["DeletePersonFailure"]',
-                    icon: 'error',
-                })
-            }
-            if ('@TempData["CreatePersonSuccess"]' != "") {
-                Swal.fire({
-                    icon: 'success',
-                    title: "Person Successfully Created!",
-                    text: '@TempData["CreatePersonSuccess"]',
-                })
-            }
-        });
-
-
-        function deletePerson(elmnt, id, name) {
+<script type="text/javascript">
+    $(document).ready(function() {
+        if ('@TempData["DeletePersonSuccess"]' != "") {
             Swal.fire({
-                title: "Delete",
-                text: "Are you sure you want to delete " + name + "?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: "No",
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.value) {
-                    window.location.href = "/Persons/Delete/" + id;
-                }
+                icon: 'success',
+                title: "Successfully Deleted!",
+                text: '@TempData["DeletePersonSuccess"]',
             })
         }
+        if ('@TempData["DeletePersonFailure"]' != "") {
+            Swal.fire({
+                title: "Failed to delete person",
+                text: '@TempData["DeletePersonFailure"]',
+                icon: 'error',
+            })
+        }
+        if ('@TempData["CreatePersonSuccess"]' != "") {
+            Swal.fire({
+                icon: 'success',
+                title: "Person Successfully Created!",
+                text: '@TempData["CreatePersonSuccess"]',
+            })
+        }
+    });
 
-        //Datatable
-        $(function() {
-            // JSON data
-            var chartDataUrl = '@Url.Action("tableJsonData", "Tables")';
 
-            $('#displayTable').dataTable({
-                dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>tp",
-                "order": [[0, "asc"]],
-                responsive: true,
-                buttons: [
-                    { extend: 'copy', className: 'btn-sm' },
-                    { extend: 'csv', title: 'Persons', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
-                    { extend: 'pdf', title: 'Persons', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
-                    { extend: 'print', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } }
-                ],
+    function deletePerson(elmnt, id, name) {
+        Swal.fire({
+            title: "Delete",
+            text: "Are you sure you want to delete " + name + "?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: "No",
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.value) {
+                window.location.href = "/Persons/Delete/" + id;
+            }
+        })
+    }
 
-                columnDefs: [
-                    { "orderable": false, "targets": [4] },
-                    { "searchable": false, "targets": [1, 4] }
-                ]
-            });
+    //Datatable
+    $(function() {
+        // JSON data
+        var chartDataUrl = '@Url.Action("tableJsonData", "Tables")';
+
+        $('#displayTable').dataTable({
+            dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>tp",
+            "order": [[0, "asc"]],
+            responsive: true,
+            buttons: [
+                { extend: 'copy', className: 'btn-sm' },
+                { extend: 'csv', title: 'Persons', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
+                { extend: 'pdf', title: 'Persons', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
+                { extend: 'print', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } }
+            ],
+
+            columnDefs: [
+                { "orderable": false, "targets": [4] },
+                { "searchable": false, "targets": [1, 4] }
+            ]
         });
-    </script>
+    });
+</script>
 }

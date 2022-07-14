@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
 }
 
-<div >
+<div>
     <a asp-action="Index">&laquo; Back to Person List</a>
 </div>
 <br />
@@ -48,127 +48,127 @@
 <hr />
 
 <p>
-    <a asp-action="Create" asp-controller="Accounts" asp-route-person_code="@Model.code" asp-route-id_number="@Model.id_number">Create New</a>
+    <a asp-action="Create" asp-controller="Accounts" asp-route-person_code="@Model.code">Create New</a>
 </p>
 <partial name="_AccountList.cshtml" for="@Model.accounts">
 
     @section Scripts {
-        @{
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $('#btnSubmit').on('click', function(e) {
+            var form = $(this).parents('form');
+            form.validate();
+            if (form.valid()) {
+                form.submit();
+            }
+        });
+
+        $(document).ready(function() {
+            if ('@TempData["UpdatePersonSuccess"]' != "") {
+                Swal.fire({
+                    icon: 'success',
+                    title: "Successfully Updated!",
+                    text: '@TempData["UpdatePersonSuccess"]',
+                })
+            }
+            if ('@TempData["AccountCreateSuccess"]' != "") {
+                Swal.fire({
+                    icon: 'success',
+                    title: "Successfully Created!",
+                    text: '@TempData["AccountCreateSuccess"]',
+                })
+            }
+            if ('@TempData["CloseAccountSuccess"]' != "") {
+                Swal.fire({
+                    icon: 'success',
+                    title: "Successfully Closed!",
+                    text: '@TempData["CloseAccountSuccess"]',
+                });
+            }
+            if ('@TempData["CloseAccountFailure"]' != "") {
+                Swal.fire({
+                    title: "Failed to close account",
+                    text: '@TempData["CloseAccountFailure"]',
+                    icon: 'error',
+                });
+            }
+            if ('@TempData["ReOpenAccountSuccess"]' != "") {
+                Swal.fire({
+                    icon: 'success',
+                    title: "Successfully Opened!",
+                    text: '@TempData["ReOpenAccountSuccess"]',
+                });
+            }
+            if ('@TempData["ReOpenAccountFailure"]' != "") {
+                Swal.fire({
+                    title: "Failed to open account",
+                    text: '@TempData["ReOpenAccountFailure"]',
+                    icon: 'error',
+                });
+            }
+        });
+
+
+        //Datatable
+        $(function() {
+            // JSON data
+            var chartDataUrl = '@Url.Action("tableJsonData", "Tables")';
+
+            $('#displayTable').dataTable({
+                dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>tp",
+                "order": [[0, "asc"]],
+                responsive: true,
+                buttons: [
+                    { extend: 'copy', className: 'btn-sm' },
+                    { extend: 'csv', title: 'Accounts', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
+                    { extend: 'pdf', title: 'Accounts', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
+                    { extend: 'print', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } }
+                ],
+
+                columnDefs: [
+                    { "orderable": false, "targets": [3] },
+                    { "searchable": false, "targets": [1, 3] }
+                ]
+            });
+        });
+
+        function closeAccount(elmnt, person_code, name, account_code) {
+            Swal.fire({
+                title: "Close Account",
+                text: "Are you sure you want to close account: " + name + "?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: "No",
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+                    window.location.href = "/Persons/CloseAccount?account_code=" + account_code + "&person_code=" + person_code;
+                }
+            })
         }
 
-        <script>
-            $('#btnSubmit').on('click', function(e) {
-                var form = $(this).parents('form');
-                form.validate();
-                if (form.valid()) {
-                    form.submit();
+        function reOpenAccount(elmnt, person_code, name, account_code) {
+            Swal.fire({
+                title: "Re-Open Account",
+                text: "Are you sure you want to re-open account: " + name + "?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: "No",
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+                    window.location.href = "/Persons/ReOpenAccount?account_code=" + account_code + "&person_code=" + person_code;
                 }
-            });
-
-            $(document).ready(function() {
-                if ('@TempData["UpdatePersonSuccess"]' != "") {
-                    Swal.fire({
-                        icon: 'success',
-                        title: "Successfully Updated!",
-                        text: '@TempData["UpdatePersonSuccess"]',
-                    })
-                }
-                if ('@TempData["AccountCreateSuccess"]' != "") {
-                    Swal.fire({
-                        icon: 'success',
-                        title: "Successfully Created!",
-                        text: '@TempData["AccountCreateSuccess"]',
-                    })
-                }
-                if ('@TempData["CloseAccountSuccess"]' != "") {
-                    Swal.fire({
-                        icon: 'success',
-                        title: "Successfully Closed!",
-                        text: '@TempData["CloseAccountSuccess"]',
-                    });
-                }
-                if ('@TempData["CloseAccountFailure"]' != "") {
-                    Swal.fire({
-                        title: "Failed to close account",
-                        text: '@TempData["CloseAccountFailure"]',
-                        icon: 'error',
-                    });
-                }
-                if ('@TempData["ReOpenAccountSuccess"]' != "") {
-                    Swal.fire({
-                        icon: 'success',
-                        title: "Successfully Opened!",
-                        text: '@TempData["ReOpenAccountSuccess"]',
-                    });
-                }
-                if ('@TempData["ReOpenAccountFailure"]' != "") {
-                    Swal.fire({
-                        title: "Failed to open account",
-                        text: '@TempData["ReOpenAccountFailure"]',
-                        icon: 'error',
-                    });
-                }
-            });
+            })
+        }
 
 
-            //Datatable
-            $(function() {
-                // JSON data
-                var chartDataUrl = '@Url.Action("tableJsonData", "Tables")';
-
-                $('#displayTable').dataTable({
-                    dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>tp",
-                    "order": [[0, "asc"]],
-                    responsive: true,
-                    buttons: [
-                        { extend: 'copy', className: 'btn-sm' },
-                        { extend: 'csv', title: 'Accounts', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
-                        { extend: 'pdf', title: 'Accounts', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
-                        { extend: 'print', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } }
-                    ],
-
-                    columnDefs: [
-                        { "orderable": false, "targets": [3] },
-                        { "searchable": false, "targets": [1, 3] }
-                    ]
-                });
-            });
-
-            function closeAccount(elmnt, person_code, name, account_code) {
-                Swal.fire({
-                    title: "Close Account",
-                    text: "Are you sure you want to close account: " + name + "?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: "No",
-                    confirmButtonText: 'Yes'
-                }).then((result) => {
-                    if (result.value) {
-                        window.location.href = "/Persons/CloseAccount?account_code=" + account_code + "&person_code=" + person_code;
-                    }
-                })
-            }
-
-            function reOpenAccount(elmnt, person_code, name, account_code) {
-                Swal.fire({
-                    title: "Re-Open Account",
-                    text: "Are you sure you want to re-open account: " + name + "?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    cancelButtonText: "No",
-                    confirmButtonText: 'Yes'
-                }).then((result) => {
-                    if (result.value) {
-                        window.location.href = "/Persons/ReOpenAccount?account_code=" + account_code + "&person_code=" + person_code;
-                    }
-                })
-            }
-
-
-        </script>
+    </script>
     }

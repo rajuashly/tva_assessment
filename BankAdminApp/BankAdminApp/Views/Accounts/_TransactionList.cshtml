@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<BankingAdminApp.DataLayer.EntityClasses.Transactions>
-
+@using BankingAdminApp.Helpers
+@inject Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> config
 @{
     ViewData["Title"] = "Index";
 }
@@ -20,7 +21,7 @@
                 <th>
                     Date Captured
                 </th>
-                <th width="20%">
+                <th width="15%">
                     Action
                 </th>
             </tr>
@@ -32,6 +33,8 @@
                 var formattedCaptureDate = item.capture_date.ToString("dd-MMM-yyyy HH:mm:ss tt");
                 var amount = item.amount.ToString("0.00").Replace(',', '.');
                 var amountColor = "gray";
+                var values = $"code={item.code}";
+                var secret = CryptoEngine.Encrypt(values, config.Value.Key);
                 if (item.amount > 0)
                 {
                     amountColor = "green";
@@ -57,7 +60,7 @@
                         @Html.DisplayFor(modelItem =>  formattedCaptureDate)
                     </td>
                     <td>
-                        <a asp-action="Details" asp-controller="Transactions" asp-route-code="@item.code" class="btn btn-sm btn-info"><i class="fa fa-eye"></i> View</a>
+                        <a asp-action="Details" asp-controller="Transactions" asp-route-secret="@secret" class="btn btn-sm btn-info"><i class="fa fa-eye"></i> View</a>
                     </td>
                 </tr>
             }
@@ -66,22 +69,22 @@
 </div>
 
 @section Scripts {
-    <script type="text/javascript">
-        $(document).ready(function() {
-            if ('@TempData["UpdateTransactionSuccess"]' != "") {
-                Swal.fire({
-                    icon: 'success',
-                    title: "Successfully Updated!",
-                    text: '@TempData["UpdateSuccess"]',
-                })
-            }
-            if ('@TempData["CreateTransactionSuccess"]' != "") {
-                Swal.fire({
-                    icon: 'success',
-                    title: "Successfully Created!",
-                    text: '@TempData["CreateSuccess"]',
-                })
-            }
-        });
-    </script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        if ('@TempData["UpdateTransactionSuccess"]' != "") {
+            Swal.fire({
+                icon: 'success',
+                title: "Successfully Updated!",
+                text: '@TempData["UpdateSuccess"]',
+            })
+        }
+        if ('@TempData["CreateTransactionSuccess"]' != "") {
+            Swal.fire({
+                icon: 'success',
+                title: "Successfully Created!",
+                text: '@TempData["CreateSuccess"]',
+            })
+        }
+    });
+</script>
 }

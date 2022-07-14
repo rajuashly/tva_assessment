@@ -1,4 +1,5 @@
 ﻿using BankingAdminApp.DataLayer.EntityClasses;
+using BankingAdminApp.Helpers;
 using BankingAdminApp.Repository.Repositories;
 using BankingAdminApp.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -19,34 +20,33 @@ namespace BankingAdminApp.Controllers
             _transactionRepository = transactionRepository;
         }
         [HttpGet]
-        public ActionResult Details(int? code)
+        public ActionResult Details(string? secret)
         {
-            if (code == null)
-            {
-                return NotFound();
-            }
             AccountViewModel vm = new AccountViewModel();
-            var account = _accountsRepository.Get(Convert.ToInt32(code));
-            if (account == null)
+
+            if (!string.IsNullOrWhiteSpace(secret))
             {
-                return NotFound();
-            }
-            else
-            {
-                vm.code = account.code;
-                vm.account_number = account.account_number;
-                vm.is_active = account.is_active;
-                vm.outstanding_balance = account.outstanding_balance;
-                if (account.Person != null && account.Person.code > 0)
+                var value = CryptoEngine.DecryptSecretForArg(secret, "account_code");
+                if (!string.IsNullOrWhiteSpace(value))
                 {
-                    vm.id_number = account.Person.id_number;
-                    vm.person_code = account.Person.code;
+                    var account = _accountsRepository.Get(Convert.ToInt32(value));
+                    if (account != null && account.code > 0)
+                    {
+                        vm.code = account.code;
+                        vm.account_number = account.account_number;
+                        vm.is_active = account.is_active;
+                        vm.outstanding_balance = account.outstanding_balance;
+                        if (account.Person != null && account.Person.code > 0)
+                        {
+                            vm.id_number = account.Person.id_number;
+                            vm.person_code = account.Person.code;
+                        }
+                        vm.transactions = account.Transactions.ToList();
+                        return View(vm);
+                    }
                 }
-                vm.transactions = account.Transactions.ToList();
-
             }
-
-            return View(vm);
+            return NotFound();
         }
 
         [HttpPost]
@@ -89,12 +89,26 @@ namespace BankingAdminApp.Controllers
         }
 
         // GET: AccountsController/Create
-        public ActionResult Create(int person_code, string id_number)
+        public ActionResult Create(string secret)
         {
-            AccountViewModel vm = new AccountViewModel();
-            vm.person_code = person_code;
-            vm.id_number = id_number;
-            return View(vm);
+            if (!string.IsNullOrWhiteSpace(secret))
+            {
+                var value = CryptoEngine.DecryptSecretForArg(secret, "person_code");
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    var person = _personsRepository.Get(Convert.ToInt32(value));
+                    if (person != null && person.code > 0)
+                    {
+                        AccountViewModel vm = new AccountViewModel();
+                        vm.person_code = person.code;
+                        vm.id_number = person.id_number;
+                        return View(vm);
+                    }
+                }
+            }
+
+            return NotFound();
+
         }
 
         // POST: AccountsController/Create

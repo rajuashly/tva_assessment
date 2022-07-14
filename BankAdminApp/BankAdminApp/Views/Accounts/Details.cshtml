@@ -1,4 +1,6 @@
 ﻿@model BankingAdminApp.ViewModels.AccountViewModel
+@using BankingAdminApp.Helpers
+@inject Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> config
 
 @{
     ViewData["Title"] = "Account Details";
@@ -12,9 +14,11 @@
     {
         balanceColor = "red";
     }
+    var values = $"code={Model.code}";
+    var secret = CryptoEngine.Encrypt(values, config.Value.Key);
 }
 <div>
-    <a asp-action="Details" asp-controller="Persons" asp-route-code="@Model.person_code">&laquo; Back to Person Details</a>
+    <a asp-action="Details" asp-controller="Persons" asp-route-secret="@secret">&laquo; Back to Person Details</a>
 </div>
 <br />
 <h4>@ViewData["Title"]</h4>
@@ -74,7 +78,7 @@
 @if (Convert.ToBoolean(Model.is_active))
 {
     <p>
-        <a asp-action="Create" asp-controller="Transactions" asp-route-code="@Model.code">Create New</a>
+        <a asp-action="Create" asp-controller="Transactions" asp-route-secret="@secret">Create New</a>
     </p>
 }
 

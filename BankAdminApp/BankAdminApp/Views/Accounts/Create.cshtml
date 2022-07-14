@@ -1,22 +1,25 @@
 ﻿@model BankingAdminApp.ViewModels.AccountViewModel
-
+@using BankingAdminApp.Helpers
+@inject Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> config
 @{
     ViewData["Title"] = "Create Account";
+    var values = $"person_code={Model.person_code}";
+    var secret = CryptoEngine.Encrypt(values, config.Value.Key);
 }
-<div >
-    <a asp-action="Details" asp-controller="Persons" asp-route-code="@Model.person_code">&laquo; Back to Person Details</a>
+<div>
+    <a asp-action="Details" asp-controller="Persons" asp-route-secret="@secret">&laquo; Back to Person Details</a>
 </div>
 <br />
 <h4>@ViewData["Title"] </h4>
 <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.id_number)
-        </dt>
-        <dd class="col-sm-10">
-            : @Html.DisplayFor(model => model.id_number)
-        </dd>
-    </dl>
+<dl class="row">
+    <dt class="col-sm-2">
+        @Html.DisplayNameFor(model => model.id_number)
+    </dt>
+    <dd class="col-sm-10">
+        : @Html.DisplayFor(model => model.id_number)
+    </dd>
+</dl>
 <div class="row">
 
     <span class="help-block">

@@ -26,6 +26,7 @@ namespace BankingAdminApp.UnitTests
             Assert.AreEqual(expected, false);
         }
 
+        [Test()]
         public void CheckPositiveNegativeDecimalNumberTest_CheckValid()
         {
             RegexChecker regexChecker = new RegexChecker();
