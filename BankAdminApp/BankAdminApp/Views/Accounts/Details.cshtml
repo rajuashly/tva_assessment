@@ -42,21 +42,21 @@
         @Html.DisplayNameFor(model => model.account_number)
     </dt>
     <dd class="col-sm-3">
-         : @Html.DisplayFor(model => model.account_number)
+        : @Html.DisplayFor(model => model.account_number)
     </dd>
     <dt class="col-sm-3">
         @Html.DisplayNameFor(model => model.id_number)
     </dt>
     <dd class="col-sm-3">
-         : @Html.DisplayFor(model => model.id_number)
+        : @Html.DisplayFor(model => model.id_number)
     </dd>
     <dt class="col-sm-3">
         @Html.DisplayNameFor(model => model.outstanding_balance)
     </dt>
     <dd class="col-sm-3">
-         : <label style="color:@balanceColor">@balance</label>
+        : <label style="color:@balanceColor">@balance</label>
     </dd>
-     <dt class="col-sm-3">
+    <dt class="col-sm-3">
         @Html.DisplayNameFor(model => model.is_active)
     </dt>
     <dd class="col-sm-3">
@@ -97,8 +97,10 @@
 
 @if (Convert.ToBoolean(Model.is_active))
 {
+    var values2 = $"code={Model.code}";
+    var secret2 = CryptoEngine.Encrypt(values, config.Value.Key);
     <p>
-        <a asp-action="Create" asp-controller="Transactions" asp-route-secret="@secret">Create New</a>
+        <a asp-action="Create" asp-controller="Transactions" asp-route-secret="@secret2">Create New</a>
     </p>
 }
 
@@ -106,59 +108,59 @@
 
 
     @section Scripts {
-    @{
-    await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
 
-    <script>
-        $('#btnSubmit').on('click', function(e) {
-            var form = $(this).parents('form');
-            form.validate();
-            if (form.valid()) {
-                form.submit();
-            }
-        });
-
-        $(document).ready(function() {
-            if ('@TempData["UpdateAccountSuccess"]' != "") {
-                Swal.fire({
-                    icon: 'success',
-                    title: "Successfully Updated!",
-                    text: '@TempData["UpdateAccountSuccess"]',
-                })
-            }
-            if ('@TempData["TransactionCreateSuccess"]' != "") {
-                Swal.fire({
-                    icon: 'success',
-                    title: "Successfully Created!",
-                    text: '@TempData["TransactionCreateSuccess"]',
-                })
-            }
-        });
-
-
-        //Datatable
-        $(function() {
-            // JSON data
-            var chartDataUrl = '@Url.Action("tableJsonData", "Tables")';
-
-            $('#displayTable').dataTable({
-                dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>tp",
-                "order": [[2, "desc"]],
-                responsive: true,
-                buttons: [
-                    { extend: 'copy', className: 'btn-sm' },
-                    { extend: 'csv', title: 'Transactions', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
-                    { extend: 'pdf', title: 'Transactions', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
-                    { extend: 'print', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } }
-                ],
-
-                columnDefs: [
-                    { "orderable": false, "targets": [4] },
-                    { "searchable": false, "targets": [2, 4] }
-                ]
+        <script>
+            $('#btnSubmit').on('click', function(e) {
+                var form = $(this).parents('form');
+                form.validate();
+                if (form.valid()) {
+                    form.submit();
+                }
             });
-        });
 
-    </script>
+            $(document).ready(function() {
+                if ('@TempData["UpdateAccountSuccess"]' != "") {
+                    Swal.fire({
+                        icon: 'success',
+                        title: "Successfully Updated!",
+                        text: '@TempData["UpdateAccountSuccess"]',
+                    })
+                }
+                if ('@TempData["TransactionCreateSuccess"]' != "") {
+                    Swal.fire({
+                        icon: 'success',
+                        title: "Successfully Created!",
+                        text: '@TempData["TransactionCreateSuccess"]',
+                    })
+                }
+            });
+
+
+            //Datatable
+            $(function() {
+                // JSON data
+                var chartDataUrl = '@Url.Action("tableJsonData", "Tables")';
+
+                $('#displayTable').dataTable({
+                    dom: "<'row'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>tp",
+                    "order": [[2, "desc"]],
+                    responsive: true,
+                    buttons: [
+                        { extend: 'copy', className: 'btn-sm' },
+                        { extend: 'csv', title: 'Transactions', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
+                        { extend: 'pdf', title: 'Transactions', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } },
+                        { extend: 'print', className: 'btn-sm', exportOptions: { columns: 'th:not(:last-child)' } }
+                    ],
+
+                    columnDefs: [
+                        { "orderable": false, "targets": [4] },
+                        { "searchable": false, "targets": [2, 4] }
+                    ]
+                });
+            });
+
+        </script>
     }
