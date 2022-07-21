@@ -22,7 +22,6 @@ namespace BankingAdminApp.Controllers
             _personsRepository = personsRepository;
             _transactionRepository = transactionRepository;
             _options = options;
-
         }
         [HttpGet]
         [EncryptedParameters("secret")]

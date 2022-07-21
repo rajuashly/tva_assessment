@@ -13,6 +13,10 @@ namespace BankingAdminApp.Repository
 
         public Persons Get(int code)
         {
+            SingletonDBContext singleton = SingletonDBContext.GetInstance;
+            var dbContext = singleton.GetDBContext();
+            var dbContext1 = singleton.GetDBContext();
+
             var result = _context.Persons.Find(code);
             if (result == null)
             {
