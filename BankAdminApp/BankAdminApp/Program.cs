@@ -1,7 +1,6 @@
 using BankingAdminApp.DataLayer.DBContext;
 using BankingAdminApp.DataLayer.EntityClasses;
 using BankingAdminApp.Helpers;
-using BankingAdminApp.Models;
 using BankingAdminApp.Repository;
 using BankingAdminApp.Repository.Repositories;
 using Microsoft.ApplicationInsights;

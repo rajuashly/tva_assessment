@@ -15,7 +15,7 @@ namespace BankingAdminApp.ViewModels
         [Required(ErrorMessage = "{0} is required")]
         [Display(Name = "Amount")]
         [RegularExpression(@"^-?[0-9]{1,18}(\.[0-9]{1,2})?$", ErrorMessage = "Enter a +ve or -ve value, values of of max 2 decimal places area allowed.")]
-        public string amount { get; set; }
+        public string amount { get; set; } 
 
         [Required(ErrorMessage = "{0} is required")]
         [MaxLength(100, ErrorMessage = "{0} cannot be greater than {1} characters")]

@@ -11,7 +11,6 @@ namespace BankingAdminApp.DataLayer.EntityClasses
         public DateTime capture_date { get; set; }
         public decimal amount { get; set; }
         public string description { get; set; }
-
         public virtual Accounts? Account { get; set; }
     }
 }
