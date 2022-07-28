@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BankingAdminApp.DataLayer.EntityClasses.Accounts>
+﻿@model IEnumerable<BankingAdminApp.ViewModels.AccountViewModel>
 @using BankingAdminApp.Helpers
 @inject Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> config
 @{
@@ -24,49 +24,25 @@
         <tbody>
             @foreach (var item in Model)
             {
-                var balance = Convert.ToDecimal(item.outstanding_balance).ToString("0.00").Replace(',', '.');
-                var balanceColor = "gray";
-                if (item.outstanding_balance > 0)
-                {
-                    balanceColor = "green";
-                }
-                else if (item.outstanding_balance < 0)
-                {
-                    balanceColor = "red";
-                }
-                var outstanding_balance = item.outstanding_balance.ToString("0.00").Replace(',', '.');
-                var isOpen = item.is_active;
                 var values = $"account_code={item.code}";
                 var secret = CryptoEngine.Encrypt(values, config.Value.Key);
                 <tr>
                     <td>
-
                         @Html.DisplayFor(modelItem => item.account_number)
                     </td>
-                    <td style="text-align:right;color:@balanceColor">
-                        @Html.DisplayFor(modelItem => balance)
+                    <td style="text-align:right;color:@item.balanceColor">
+                        @Html.DisplayFor(modelItem => item.balance)
                     </td>
-                    @if (isOpen)
-                    {
-                        <td style="color:green">
-                            <i>Open</i>
-                        </td>
-                    }
-                    else
-                    {
-                        <td style="color:red">
-                            <i>Closed</i>
-                        </td>
-                    }
+                    <td style="color:@item.statusColor">
+                        <i>@item.status</i>
+                    </td>
                     <td>
                         <a asp-action="Details" asp-controller="Accounts" asp-route-secret="@secret" class="btn btn-sm btn-info"><i class="fa fa-eye"></i> View</a>
-
-                        @if (isOpen)
+                        @if (item.is_active == true)
                         {
                             @if (item.outstanding_balance == 0)
                             {
                                 <button class="btn btn-danger btn-sm" onclick="return closeAccount(this, '@item.person_code', '@item.account_number', '@item.code')"><i class="fa fa-times-circle"></i> Close</button>
-
                             }
                         }
                         else

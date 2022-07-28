@@ -8,6 +8,7 @@ using BankingAdminApp.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace BankingAdminApp.Controllers
 {
@@ -15,18 +16,17 @@ namespace BankingAdminApp.Controllers
     {
         private readonly IPersonsRepository<Persons> _personsRepository;
         private readonly IAccountsRepository<Accounts> _accountsRepository;
-        Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> _options;
-
-        private Mapper _mapper;
+        private readonly IOptions<CryptoEngine.Secrets> _options;
+        private readonly Mapper _mapper;
+        private readonly Mapper _mapperAcc;
         public PersonsController(IPersonsRepository<Persons> personsRepository, IAccountsRepository<Accounts> accountsRepository, Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> options)
         {
             _personsRepository = personsRepository;
             _accountsRepository = accountsRepository;
             _options = options;
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<Persons, PersonViewModel>());
-            _mapper = new Mapper(config);
+            _mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<Persons, PersonViewModel>()));
+            _mapperAcc = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<Accounts, AccountViewModel>()));
         }
-
 
         [HttpGet]
         public ActionResult Index()
@@ -45,7 +45,7 @@ namespace BankingAdminApp.Controllers
                 {
                     PersonViewModel vm = new PersonViewModel();
                     vm = _mapper.Map<PersonViewModel>(person);
-                    vm.accounts = _accountsRepository.GetByPersonCode(person.code);
+                    vm.accounts = _mapperAcc.Map<List<AccountViewModel>>(_accountsRepository.GetByPersonCode(person.code));
                     return View(vm);
                 }
             }
@@ -84,7 +84,7 @@ namespace BankingAdminApp.Controllers
             }
 
             PersonViewModel vm = _mapper.Map<PersonViewModel>(person);
-            vm.accounts = _accountsRepository.GetByPersonCode(person.code);
+            vm.accounts = _mapperAcc.Map<List<AccountViewModel>>(_accountsRepository.GetByPersonCode(person.code));
             return View(vm);
         }
 

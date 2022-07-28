@@ -12,5 +12,6 @@ namespace BankingAdminApp.DataLayer.EntityClasses
         public decimal amount { get; set; }
         public string description { get; set; }
         public virtual Accounts? Account { get; set; }
+
     }
 }

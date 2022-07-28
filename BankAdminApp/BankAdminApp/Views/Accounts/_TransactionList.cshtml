@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BankingAdminApp.DataLayer.EntityClasses.Transactions>
+﻿@model IEnumerable<BankingAdminApp.ViewModels.TransactionViewModel>
 @using BankingAdminApp.Helpers
 @inject Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> config
 @{
@@ -10,16 +10,16 @@
         <thead>
             <tr>
                 <th width="20%">
-                    Description
+                    @Html.DisplayNameFor(model => model.description)
                 </th>
                 <th>
-                    Amount
+                    @Html.DisplayNameFor(model => model.amount)
                 </th>
                 <th>
-                    Transaction Date
+                    @Html.DisplayNameFor(model => model.transaction_date)
                 </th>
                 <th>
-                    Date Captured
+                    @Html.DisplayNameFor(model => model.capture_date)
                 </th>
                 <th width="15%">
                     Action
@@ -29,31 +29,19 @@
         <tbody>
             @foreach (var item in Model)
             {
-                var formattedTransactionDate = item.transaction_date.ToString("dd-MMM-yyyy");
-                var formattedCaptureDate = item.capture_date.ToString("dd-MMM-yyyy HH:mm:ss tt");
-                var amount = item.amount.ToString("0.00").Replace(',', '.');
-                var amountColor = "gray";
+                var formattedTransactionDate = Convert.ToDateTime(item.transaction_date).ToString("dd-MMM-yyyy");
+                var formattedCaptureDate = Convert.ToDateTime(item.capture_date).ToString("dd-MMM-yyyy HH:mm:ss tt");
+                var amount = Convert.ToDecimal(item.amount).ToString("0.00").Replace(',', '.');
                 var values = $"code={item.code}";
                 var secret = CryptoEngine.Encrypt(values, config.Value.Key);
-                if (item.amount > 0)
-                {
-                    amountColor = "green";
-                }
-                else if (item.amount < 0)
-                {
-                    amountColor = "red";
-                }
                 <tr>
                     <td>
-
                         @Html.DisplayFor(modelItem => item.description)
                     </td>
-                    <td style="text-align:right;color:@amountColor">
+                    <td style="text-align:right;color:@item.amountColor">
                         @Html.DisplayFor(modelItem => amount)
                     </td>
-
                     <td>
-
                         @Html.DisplayFor(modelItem => formattedTransactionDate)
                     </td>
                     <td>

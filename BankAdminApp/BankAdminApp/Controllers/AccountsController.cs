@@ -1,4 +1,5 @@
-﻿using BankingAdminApp.DataLayer.EntityClasses;
+﻿using AutoMapper;
+using BankingAdminApp.DataLayer.EntityClasses;
 using BankingAdminApp.Helpers;
 using BankingAdminApp.Helpers.Controllers;
 using BankingAdminApp.Repository.Repositories;
@@ -6,6 +7,7 @@ using BankingAdminApp.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace BankingAdminApp.Controllers
 {
@@ -14,15 +16,17 @@ namespace BankingAdminApp.Controllers
         private readonly IPersonsRepository<Persons> _personsRepository;
         private readonly IAccountsRepository<Accounts> _accountsRepository;
         private readonly ITransactionsRepository<Transactions> _transactionRepository;
-        Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> _options;
-
+        private readonly IOptions<CryptoEngine.Secrets> _options;
+        private readonly Mapper _mapperTransactions;
         public AccountsController(IAccountsRepository<Accounts> accountsRepository, IPersonsRepository<Persons> personsRepository, ITransactionsRepository<Transactions> transactionRepository, Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> options)
         {
             _accountsRepository = accountsRepository;
             _personsRepository = personsRepository;
             _transactionRepository = transactionRepository;
             _options = options;
+            _mapperTransactions = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<Transactions, TransactionViewModel>()));
         }
+
         [HttpGet]
         [EncryptedParameters("secret")]
         public ActionResult Details(int? account_code)
@@ -41,7 +45,7 @@ namespace BankingAdminApp.Controllers
                     vm.id_number = account.Person.id_number;
                     vm.person_code = account.Person.code;
                 }
-                vm.transactions = account.Transactions.ToList();
+                vm.transactions = _mapperTransactions.Map<List<TransactionViewModel>>(account.Transactions.ToList());
                 return View(vm);
             }
             return NotFound();
@@ -81,7 +85,7 @@ namespace BankingAdminApp.Controllers
                     throw;
                 }
             }
-            vm.transactions = _transactionRepository.GetByAccountCode(vm.code);
+            vm.transactions = _mapperTransactions.Map<List<TransactionViewModel>>(_transactionRepository.GetByAccountCode(vm.code));
             return View(vm);
         }
 

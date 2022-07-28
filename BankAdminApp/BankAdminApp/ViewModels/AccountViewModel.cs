@@ -19,7 +19,7 @@ namespace BankingAdminApp.ViewModels
         [RegularExpression(@"^[0-9]{1,50}$", ErrorMessage = "Only numbers are allowed")]
         [Remote("Exists", "Accounts", HttpMethod = "POST", AdditionalFields = "code", ErrorMessage = "{0} number already exists")]
         public string account_number { get; set; }
-        public List<Transactions>? transactions { get; set; }
+        public List<TransactionViewModel>? transactions { get; set; }
 
         [Display(Name = "Status")]
         public bool? is_active { get; set; }
@@ -27,5 +27,53 @@ namespace BankingAdminApp.ViewModels
         [Display(Name = "Balance")]
         public decimal? outstanding_balance { get; set; }
 
+        public string? balanceColor => GetBalanceColor();
+        public string? status => GetStatus();
+        public string? statusColor => GetStatusColor();
+        public string? balance => GetAccountOutstandingBalanceString();
+
+        private string GetBalanceColor()
+        {
+            if (outstanding_balance > 0)
+            {
+                return "green";
+            }
+            else if (outstanding_balance < 0)
+            {
+                return "red";
+            }
+            else
+            {
+                return "gray";
+            }
+        }
+
+        private string GetStatusColor()
+        {
+            if (is_active == true)
+            {
+                return "green";
+            }
+            else
+            {
+                return "red";
+            }
+        }
+
+        private string GetStatus()
+        {
+            if (is_active == true)
+            {
+                return "Open";
+            }
+            else
+            {
+                return "Closed";
+            }
+        }      
+        private string GetAccountOutstandingBalanceString()
+        {
+            return Convert.ToDecimal(outstanding_balance).ToString("0.00").Replace(',', '.');
+        }
     }
 }

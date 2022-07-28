@@ -27,7 +27,7 @@ namespace BankingAdminApp.ViewModels
         [Remote("Exists", "Persons", HttpMethod = "POST", AdditionalFields = "code", ErrorMessage = "Id number already exists")]
         public virtual string id_number { get; set; }
 
-        public List<Accounts>? accounts { get; set; }        
+        public List<AccountViewModel>? accounts { get; set; }        
 
     }
 }

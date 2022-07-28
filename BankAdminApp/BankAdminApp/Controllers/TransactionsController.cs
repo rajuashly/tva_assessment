@@ -7,6 +7,7 @@ using BankingAdminApp.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace BankingAdminApp.Controllers
 {
@@ -15,16 +16,15 @@ namespace BankingAdminApp.Controllers
         private readonly ITransactionsRepository<Transactions> _transactionRepository;
         private readonly IAccountsRepository<Accounts> _accountsRepository;
         private readonly IPersonsRepository<Persons> _personsRepository;
-        Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> _options;
+        IOptions<CryptoEngine.Secrets> _options;
         private Mapper _mapper;
         public TransactionsController(IAccountsRepository<Accounts> accountsRepository, ITransactionsRepository<Transactions> transactionRepository, IPersonsRepository<Persons> personsRepository, Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> options)
         {
             _accountsRepository = accountsRepository;
             _transactionRepository = transactionRepository;
             _personsRepository = personsRepository;
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<Transactions, TransactionViewModel>());
             _options = options;
-            _mapper = new Mapper(config);
+            _mapper = new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<Transactions, TransactionViewModel>()));
         }
         [HttpGet]
         [EncryptedParameters("secret")]

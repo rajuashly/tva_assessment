@@ -4,31 +4,8 @@
 
 @{
     ViewData["Title"] = "Account Details";
-    var balance = Convert.ToDecimal(Model.outstanding_balance).ToString("0.00").Replace(',', '.');
-    var balanceColor = "gray";
-    if (Model.outstanding_balance > 0)
-    {
-        balanceColor = "green";
-    }
-    else if (Model.outstanding_balance < 0)
-    {
-        balanceColor = "red";
-    }
     var values = $"code={Model.person_code}";
     var secret = CryptoEngine.Encrypt(values, config.Value.Key);
-    var isOpen = Model.is_active;
-    var Status = string.Empty;
-    var StatusColor = string.Empty;
-    @if (isOpen == true)
-    {
-        Status = "Open";
-        StatusColor = "green";
-    }
-    else
-    {
-        Status = "Closed";
-        StatusColor = "red";
-    }
 }
 <div>
     <a asp-action="Details" asp-controller="Persons" asp-route-secret="@secret">&laquo; Back to Person Details</a>
@@ -54,13 +31,13 @@
         @Html.DisplayNameFor(model => model.outstanding_balance)
     </dt>
     <dd class="col-sm-3">
-        : <label style="color:@balanceColor">@balance</label>
+        : <label style="color:@Model.balanceColor">@Model.balance</label>
     </dd>
     <dt class="col-sm-3">
         @Html.DisplayNameFor(model => model.is_active)
     </dt>
     <dd class="col-sm-3">
-        : <label style="color:@StatusColor">@Status</label>
+        : <label style="color:@Model.statusColor">@Model.status</label>
     </dd>
 </dl>
 <h5>Update Account Details</h5>
