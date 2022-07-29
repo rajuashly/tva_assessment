@@ -19,7 +19,7 @@ namespace BankingAdminApp.Controllers
         private readonly IOptions<CryptoEngine.Secrets> _options;
         private readonly Mapper _mapper;
         private readonly Mapper _mapperAcc;
-        public PersonsController(IPersonsRepository<Persons> personsRepository, IAccountsRepository<Accounts> accountsRepository, Microsoft.Extensions.Options.IOptions<CryptoEngine.Secrets> options)
+        public PersonsController(IPersonsRepository<Persons> personsRepository, IAccountsRepository<Accounts> accountsRepository, IOptions<CryptoEngine.Secrets> options)
         {
             _personsRepository = personsRepository;
             _accountsRepository = accountsRepository;

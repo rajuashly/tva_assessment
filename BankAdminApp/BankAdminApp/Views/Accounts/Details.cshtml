@@ -5,10 +5,9 @@
 @{
     ViewData["Title"] = "Account Details";
     var values = $"code={Model.person_code}";
-    var secret = CryptoEngine.Encrypt(values, config.Value.Key);
 }
 <div>
-    <a asp-action="Details" asp-controller="Persons" asp-route-secret="@secret">&laquo; Back to Person Details</a>
+    <a asp-action="Details" asp-controller="Persons" asp-route-secret="@CryptoEngine.Encrypt(values, config.Value.Key)">&laquo; Back to Person Details</a>
 </div>
 <br />
 <h4>@ViewData["Title"]</h4>
@@ -75,9 +74,8 @@
 @if (Convert.ToBoolean(Model.is_active))
 {
     var values2 = $"code={Model.code}";
-    var secret2 = CryptoEngine.Encrypt(values, config.Value.Key);
     <p>
-        <a asp-action="Create" asp-controller="Transactions" asp-route-secret="@secret2">Create New</a>
+        <a asp-action="Create" asp-controller="Transactions" asp-route-secret="@CryptoEngine.Encrypt(values2, config.Value.Key)">Create New</a>
     </p>
 }
 

@@ -33,7 +33,6 @@
                 var formattedCaptureDate = Convert.ToDateTime(item.capture_date).ToString("dd-MMM-yyyy HH:mm:ss tt");
                 var amount = Convert.ToDecimal(item.amount).ToString("0.00").Replace(',', '.');
                 var values = $"code={item.code}";
-                var secret = CryptoEngine.Encrypt(values, config.Value.Key);
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.description)
@@ -48,7 +47,7 @@
                         @Html.DisplayFor(modelItem =>  formattedCaptureDate)
                     </td>
                     <td>
-                        <a asp-action="Details" asp-controller="Transactions" asp-route-secret="@secret" class="btn btn-sm btn-info"><i class="fa fa-eye"></i> View</a>
+                        <a asp-action="Details" asp-controller="Transactions" asp-route-secret="@CryptoEngine.Encrypt(values, config.Value.Key)" class="btn btn-sm btn-info"><i class="fa fa-eye"></i> View</a>
                     </td>
                 </tr>
             }

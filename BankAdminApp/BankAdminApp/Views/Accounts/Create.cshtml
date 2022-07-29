@@ -4,10 +4,9 @@
 @{
     ViewData["Title"] = "Create Account";
     var values = $"code={Model.person_code}";
-    var secret = CryptoEngine.Encrypt(values, config.Value.Key);
 }
 <div>
-    <a asp-action="Details" asp-controller="Persons" asp-route-secret="@secret">&laquo; Back to Person Details</a>
+    <a asp-action="Details" asp-controller="Persons" asp-route-secret="@CryptoEngine.Encrypt(values, config.Value.Key)">&laquo; Back to Person Details</a>
 </div>
 <br />
 <h4>@ViewData["Title"] </h4>

@@ -33,10 +33,9 @@ namespace BankingAdminApp.ViewModels
         public string? id_number { get; set; }
         public string? amountColor => GetColor();
         public string? formattedAmount => GetColor();
-
         private string GetColor()
         {
-            decimal decimalAmount = Convert.ToDecimal(amount);
+            decimal decimalAmount = Convert.ToDecimal(amount.Replace(".",","));
             if (decimalAmount > 0)
             {
                 return "green";

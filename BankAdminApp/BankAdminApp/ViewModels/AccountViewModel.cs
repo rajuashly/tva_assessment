@@ -1,11 +1,21 @@
 ﻿using BankingAdminApp.DataLayer.EntityClasses;
+using BankingAdminApp.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 
 namespace BankingAdminApp.ViewModels
 {
     public class AccountViewModel
     {
+        //private readonly IOptions<CryptoEngine.Secrets> _options;
+        //private readonly IConfiguration Configuration;
+
+        //public AccountViewModel(IConfiguration configuration)
+        //{
+        //    Configuration = configuration;
+        //}
         public int code { get; set; }
         public int person_code { get; set; }
 
@@ -31,7 +41,6 @@ namespace BankingAdminApp.ViewModels
         public string? status => GetStatus();
         public string? statusColor => GetStatusColor();
         public string? balance => GetAccountOutstandingBalanceString();
-
         private string GetBalanceColor()
         {
             if (outstanding_balance > 0)
@@ -47,7 +56,6 @@ namespace BankingAdminApp.ViewModels
                 return "gray";
             }
         }
-
         private string GetStatusColor()
         {
             if (is_active == true)
@@ -59,7 +67,6 @@ namespace BankingAdminApp.ViewModels
                 return "red";
             }
         }
-
         private string GetStatus()
         {
             if (is_active == true)
@@ -70,7 +77,7 @@ namespace BankingAdminApp.ViewModels
             {
                 return "Closed";
             }
-        }      
+        }
         private string GetAccountOutstandingBalanceString()
         {
             return Convert.ToDecimal(outstanding_balance).ToString("0.00").Replace(',', '.');

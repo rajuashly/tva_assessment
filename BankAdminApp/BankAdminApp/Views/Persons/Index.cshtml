@@ -33,8 +33,6 @@
             @foreach (var item in Model)
             {
                 var values = $"code={item.code}";
-                var secret = CryptoEngine.Encrypt(values, config.Value.Key);
-
                 var accounts = item.Accounts.Select(x => x.account_number).ToList();
                 <tr>
                     <td>
@@ -72,7 +70,7 @@
                         }
                     </td>
                     <td>
-                        <a asp-action="Details" asp-route-secret="@secret" class="btn btn-sm btn-info"><i class="fa fa-eye"></i> View</a>
+                        <a asp-action="Details" asp-route-secret="@CryptoEngine.Encrypt(values, config.Value.Key)" class="btn btn-sm btn-info"><i class="fa fa-eye"></i> View</a>
 
                         @if (item.Accounts.Where(x => x.is_active).Count() == 0)
                         {

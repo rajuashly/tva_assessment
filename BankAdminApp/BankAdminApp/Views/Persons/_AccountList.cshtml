@@ -23,9 +23,9 @@
         </thead>
         <tbody>
             @foreach (var item in Model)
-            {
+            {               
                 var values = $"account_code={item.code}";
-                var secret = CryptoEngine.Encrypt(values, config.Value.Key);
+
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.account_number)
@@ -37,7 +37,7 @@
                         <i>@item.status</i>
                     </td>
                     <td>
-                        <a asp-action="Details" asp-controller="Accounts" asp-route-secret="@secret" class="btn btn-sm btn-info"><i class="fa fa-eye"></i> View</a>
+                        <a asp-action="Details" asp-controller="Accounts" asp-route-secret="@CryptoEngine.Encrypt(values, config.Value.Key)" class="btn btn-sm btn-info"><i class="fa fa-eye"></i> View</a>
                         @if (item.is_active == true)
                         {
                             @if (item.outstanding_balance == 0)
